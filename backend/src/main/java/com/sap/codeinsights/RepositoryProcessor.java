@@ -1,5 +1,6 @@
 package com.sap.codeinsights;
  
+// TODO remove * imports
 import java.io.*;
 import java.util.*;
 
@@ -18,7 +19,7 @@ import org.apache.commons.io.FileUtils;
 public class RepositoryProcessor {
 
 	//TODO if file exists it don't clone it obvi
-	private static Git cloneRepo(String url) {
+	public static Git cloneRepo(String url) {
 		try { 
 			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
 
@@ -34,7 +35,7 @@ public class RepositoryProcessor {
 	}
 
 	//returns anyone who ever committed anything to the repoistory
-	private static ArrayList<Coder> getCoders(Git repo) {
+	public static ArrayList<Coder> getCoders(Git repo) {
 		ArrayList<Coder> coders = new ArrayList<Coder>();
 		try {
 			
@@ -53,8 +54,8 @@ public class RepositoryProcessor {
 	}
 
 
+	//TODO refactor to runProcessors
 	public static String process(String url) {
-
 		String response = "";
 		ArrayList<String> people = new ArrayList<String>();
 
