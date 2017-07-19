@@ -71,7 +71,7 @@ public class RepositoryProcessor {
 			for (File file : files) {
 				i++;
 				System.out.println((((double)i/files.size())*100) + "%");
-				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders, response);
+				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
 			response += coders.toString();

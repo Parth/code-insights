@@ -23,40 +23,39 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 	private List<Coder> coders;
 	private Git repo;
 	
-	//TODO remove out
-	private String out;
-
-	public DocumentationProcessor(File file, Git repo, List<Coder> coders, String out) throws FileNotFoundException, ParseException, IOException {
+	public DocumentationProcessor(File file, Git repo, List<Coder> coders) throws FileNotFoundException, ParseException, IOException {
 		super();
 		this.file = file;
 		this.repo = repo;
 		this.coders = coders;
-		//TODO remove out
-		this.out = out;
 
 		FileInputStream inputStream = new FileInputStream(file);
 		this.visit(JavaParser.parse(inputStream), null);
 		inputStream.close();
 	}
 
-	private void hasComments(MethodDeclaration n) throws GitAPIException {
-		Comment comment = n.getComment();
+	private void hasComments(MethodDeclaration n) {
+		Comment comment = n.getComment().get();
 		ArrayList<Coder> commenters = new ArrayList<Coder>();
 		ArrayList<Coder> programmers = new ArrayList<Coder>();
 		ArrayList<Coder> allContributors = new ArrayList<Coder>();
 
-		for (int i = comment.getBeginLine(); i <= comment.getEndLine(); i++) {
-			Coder commenter = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
-			if (!commenters.contains(commenter)) {
-				commenters.add(commenter);
+		try { 
+			for (int i = comment.getBegin().get().line; i <= comment.getEnd().get().line; i++) {
+				Coder commenter = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				if (!commenters.contains(commenter)) {
+					commenters.add(commenter);
+				}
 			}
-		}
 
-		for (int i = n.getBeginLine(); i <= n.getEndLine(); i++) {
-			Coder programmer = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
-			if (!programmers.contains(programmer)) {
-				programmers.add(programmer);
+			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
+				Coder programmer = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				if (!programmers.contains(programmer)) {
+					programmers.add(programmer);
+				}
 			}
+		} catch  (GitAPIException e) {
+			e.printStackTrace();
 		}
 
 		allContributors.addAll(programmers);
@@ -79,14 +78,18 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 		}
 	}
 
-	private void noComments(MethodDeclaration n) throws GitAPIException {
+	private void noComments(MethodDeclaration n) {
 		ArrayList<Coder> programmers = new ArrayList<Coder>();
 
-		for (int i = n.getBeginLine(); i <= n.getEndLine(); i++) {
-			Coder programmer = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
-			if (!programmers.contains(programmer)) {
-				programmers.add(programmer);
+		try {
+			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
+				Coder programmer = new Coder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				if (!programmers.contains(programmer)) {
+					programmers.add(programmer);
+				}
 			}
+		} catch  (GitAPIException e) {
+			e.printStackTrace();
 		}
 
 		for (Coder programmer: programmers) {
@@ -101,14 +104,7 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 	
 	@Override
 	public void visit(MethodDeclaration n, Object args) {
-		try {
-			if (n.getComment() != null) {
-				hasComments(n);
-			} else {
-				noComments(n);
-			}
-		} catch (GitAPIException e) {
-			//TODO do something clever here
-		}
+		n.getComment().ifPresent(a -> hasComments(n));
+		n.getComment().ifPresent(a -> noComments(n));
 	}
 }
