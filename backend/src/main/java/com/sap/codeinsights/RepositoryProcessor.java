@@ -60,26 +60,19 @@ public class RepositoryProcessor {
 
 		Git repo = null;
 		try {
-			System.out.println("Cloning repo");
 			repo = cloneRepo(url);
-			System.out.println("Repo cloned");
-			System.out.println("Getting all contributors");
 			ArrayList<Coder> coders = getCoders(repo);
-			System.out.println(coders);
-			System.out.println("Got all contributors");
 			
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 
 			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[] {"java"} , true);
 			
-			System.out.println("going through files");
 			int i = 0;
 			for (File file : files) {
 				i++;
 				System.out.println((((double)i/files.size())*100) + "%");
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders, response);
 			}
-			System.out.println("done");
 
 			response += coders.toString();
 
