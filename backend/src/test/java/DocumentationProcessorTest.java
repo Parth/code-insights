@@ -24,14 +24,32 @@ public class DocumentationProcessorTest {
 		List<Coder> coders = RepositoryProcessor.getCoders(testRepo);
 
 		File repoDir = testRepo.getRepository().getDirectory().getParentFile();
-		File testFile1 = new File(repoDir.getPath() + "/DocumentationProcessorTests/Test1.java");
+		File testFile = new File(repoDir.getPath() + "/DocumentationProcessorTests/Test1.java");
 
-		DocumentationProcessor noComments = new DocumentationProcessor(testFile1, testRepo, coders);
+		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, coders);
 		assertNotNull(coders);
 
 		for (Coder c : coders) {
 			assertEquals(c.methodsContributed, 1);
 			assertEquals(c.documentedMethods, 0);
+			assertEquals(c.undocumentedMethods, 1);
+		}
+	}
+
+	@Test
+	public void testFileWithComments() throws Exception {
+		Git testRepo = RepositoryProcessor.cloneRepo(REPO_DEST);
+		List<Coder> coders = RepositoryProcessor.getCoders(testRepo);
+
+		File repoDir = testRepo.getRepository().getDirectory().getParentFile();
+		File testFile = new File(repoDir.getPath() + "/DocumentationProcessorTests/Test2.java");
+
+		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, coders);
+		assertNotNull(coders);
+
+		for (Coder c : coders) {
+			assertEquals(c.methodsContributed, 1);
+			assertEquals(c.documentedMethods, 1);
 			assertEquals(c.undocumentedMethods, 0);
 		}
 	}
