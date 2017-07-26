@@ -34,7 +34,7 @@ public class Coder extends  PersonIdent{
 	public boolean equals(final Object o) {
 		final Coder c = (Coder) o;
 		return 
-			super.getName().equals(c.getName()) &&
+			super.getName().equals(c.getName()) ||
 			super.getEmailAddress().equals(c.getEmailAddress());
 	}
 }
