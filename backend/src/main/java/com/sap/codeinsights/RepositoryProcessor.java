@@ -4,6 +4,11 @@ package com.sap.codeinsights;
 import java.io.*;
 import java.util.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.FileVisitOption;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
@@ -18,16 +23,23 @@ import org.apache.commons.io.FileUtils;
 
 public class RepositoryProcessor {
 
-	//TODO if file exists it don't clone it obvi
 	public static Git cloneRepo(String url) {
 		try { 
 			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
+
+			if (file.exists()) {
+				Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)
+					.sorted(Comparator.reverseOrder())
+					.map(Path::toFile)
+					.forEach(File::delete);
+			}
 
 			Git result = Git.cloneRepository()
 					.setURI(url)
 					.setDirectory(file)
 					.call();
 			return result;
+
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
