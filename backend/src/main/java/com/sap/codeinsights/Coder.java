@@ -2,10 +2,12 @@ package com.sap.codeinsights;
 
 import org.eclipse.jgit.lib.PersonIdent;
 
-public class Coder extends  PersonIdent{
+public class Coder extends PersonIdent{
 
+	//TODO Containerize this
 	public int methodsContributed;
 
+	//TODO do we use this?
 	public int documentationContributed;
 	public int documentedMethods;
 	public int undocumentedMethods;
@@ -14,11 +16,11 @@ public class Coder extends  PersonIdent{
 		super(i);
 	}
 
+	//TODO this is a bad way to do this
 	public String JSON() {
 		return 
 			"{ " +
 				"\"name\" : \"" + super.getName() + "\"," +
-				"\"email\" : \"" + super.getEmailAddress() + "\"," +
 				"\"methodsContributed\" : \"" + methodsContributed + "\"," + 
 				"\"documentedMethods\" : \"" + documentedMethods + "\"," + 
 				"\"undocumentedMethods\" : \"" + undocumentedMethods + "\"" + 
@@ -34,7 +36,6 @@ public class Coder extends  PersonIdent{
 	public boolean equals(final Object o) {
 		final Coder c = (Coder) o;
 		return 
-			super.getName().equals(c.getName()) &&
-			super.getEmailAddress().equals(c.getEmailAddress());
+			super.getName().equalsIgnoreCase(c.getName());
 	}
 }
