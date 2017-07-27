@@ -5,6 +5,7 @@ var APP_DIR = path.resolve(__dirname, 'src/');
 
 var config = {
 	entry: "./src/index.jsx",
+	
 
 	output: {
 		filename: "bundle.js",
@@ -30,6 +31,7 @@ var config = {
 
 	devServer: {
 		port: 3000,
+		disableHostCheck: true,
 		historyApiFallback: {
 			index: 'index.html'
 		}
