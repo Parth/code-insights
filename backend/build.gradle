@@ -11,5 +11,6 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.1.1.201511131810-r'
 	compile group: 'com.github.javaparser', name: 'javaparser-core', version: '2.2.2'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
-
+	testCompile 'junit:junit:4.12'
+    	compile 'junit:junit:4.12'
 }
