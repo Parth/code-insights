@@ -15,7 +15,7 @@ public class DocumentationProcessorTest {
     @Test
 	public void testContributorCount() {
 		Git testRepo = RepositoryProcessor.cloneRepo(REPO_DEST);
-        assertTrue("Should only be 3 contributors", RepositoryProcessor.getCoders(testRepo).size() == 3);
+        assertEquals("There should only be 3 Contributors", RepositoryProcessor.getCoders(testRepo).size(), 3);
     }
 
 	@Test
@@ -30,9 +30,11 @@ public class DocumentationProcessorTest {
 		assertNotNull(coders);
 
 		for (Coder c : coders) {
-			assertEquals(c.methodsContributed, 1);
-			assertEquals(c.documentedMethods, 0);
-			assertEquals(c.undocumentedMethods, 1);
+			if (c.methodsContributed != 0) {
+				assertEquals(c.methodsContributed, 1);
+				assertEquals(c.documentedMethods, 0);
+				assertEquals(c.undocumentedMethods, 1);
+			}
 		}
 	}
 
@@ -48,9 +50,11 @@ public class DocumentationProcessorTest {
 		assertNotNull(coders);
 
 		for (Coder c : coders) {
-			assertEquals(c.methodsContributed, 1);
-			assertEquals(c.documentedMethods, 1);
-			assertEquals(c.undocumentedMethods, 0);
+			if (c.methodsContributed != 0) {
+				assertEquals(c.methodsContributed, 1);
+				assertEquals(c.documentedMethods, 1);
+				assertEquals(c.undocumentedMethods, 0);
+			}
 		}
 	}
 }

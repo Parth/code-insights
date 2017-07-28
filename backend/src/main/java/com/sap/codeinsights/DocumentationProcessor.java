@@ -104,7 +104,10 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 	
 	@Override
 	public void visit(MethodDeclaration n, Object args) {
-		n.getComment().ifPresent(a -> hasComments(n));
-		n.getComment().ifPresent(a -> noComments(n));
+		if (n.getComment().isPresent()) {
+			hasComments(n);
+		} else {
+			noComments(n);
+		}
 	}
 }
