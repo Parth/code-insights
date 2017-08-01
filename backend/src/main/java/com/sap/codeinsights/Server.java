@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class Server {
-
 	public static boolean setupServer(){ 
 		File file = new File(System.getProperty("user.home") + "/code-insights");
 		try {

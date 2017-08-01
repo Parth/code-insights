@@ -7,6 +7,10 @@ public class API {
 		 return RepositoryProcessor.process(url);
 	}
 
+	public static String processorsAvailable() {
+		return ProcessorService.allProcessors();
+	}
+
 	//public static String getAllRecipes(MongoDatabase database) {
 	//	return RecipeService.getAllRecipes(database).toString();
 	//}
