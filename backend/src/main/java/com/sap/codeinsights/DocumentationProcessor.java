@@ -78,6 +78,7 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 		}
 	}
 
+	// TODO refactor to hashset of some sort
 	private void noComments(MethodDeclaration n) {
 		ArrayList<Coder> programmers = new ArrayList<Coder>();
 
