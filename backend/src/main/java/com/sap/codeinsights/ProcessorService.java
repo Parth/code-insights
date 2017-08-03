@@ -18,6 +18,8 @@ public class ProcessorService {
 	}
 
 	public static String getResult(String jobId) {
-		
+		goto db; 
+		query; 
+		return result;
 	}
 }
