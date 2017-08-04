@@ -25,7 +25,7 @@ public class Server {
 
 	public static void main(String args[]) {
 		if (!setupServer()) {
-			System.out.println("Server could not be initialized, shutting down now.");
+			System.err.println("Server could not be initialized, it was a good try, shutting down now.");
 			System.exit(1);
 		}
 
