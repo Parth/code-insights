@@ -31,9 +31,12 @@ public class Server {
 
 		post("/repository-processor", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
-			String ret = API.processessRepository(req.body());
-			System.out.println(ret);
-			return ret;
+			return API.processessRepository(req.body());
+		});
+
+		post("/new-request", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.newJob(req.body());
 		});
 	}
 }
