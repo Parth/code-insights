@@ -1,5 +1,9 @@
 package com.sap.codeinsights;
 
+import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+
 import org.eclipse.jgit.lib.PersonIdent;
 
 public class Coder extends PersonIdent{
@@ -16,21 +20,10 @@ public class Coder extends PersonIdent{
 		super(i);
 	}
 
-	//TODO this is a bad way to do this
-	public String JSON() {
-		return 
-			"{ " +
-				"\"name\" : \"" + super.getName() + "\"," +
-				"\"methodsContributed\" : \"" + methodsContributed + "\"," + 
-				"\"documentedMethods\" : \"" + documentedMethods + "\"," + 
-				"\"undocumentedMethods\" : \"" + undocumentedMethods + "\"" + 
-			"}";
-	}
-
-	@Override
-	public String toString() {
-		return JSON();
-	}
+    public JsonObject toJson() {
+        JsonParser parser = new JsonParser();
+        return parser.parse(this.toString()).getAsJsonObject();
+    }
 
 	@Override
 	public boolean equals(final Object o) {
@@ -38,4 +31,11 @@ public class Coder extends PersonIdent{
 		return 
 			super.getName().equalsIgnoreCase(c.getName());
 	}
+
+	@Override
+	public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
 }

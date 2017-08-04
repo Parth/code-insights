@@ -6,14 +6,14 @@ import com.google.gson.JsonObject;
 
 public class API {
 	public static String processessRepository(String url) {
-		 return RepositoryProcessor.process(url);
+		return RepositoryProcessor.process(url);
 	}
 
 	public static String processorsAvailable() {
 		return ProcessorService.allProcessors();
 	}
 
-	public static String newJob() {
+	public static String createJob() {
 		return ProcessorService.createJob(
 	}
 }
