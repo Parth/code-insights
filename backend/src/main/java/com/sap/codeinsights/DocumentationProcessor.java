@@ -120,4 +120,8 @@ public class DocumentationProcessor extends VoidVisitorAdapter implements Proces
 	public String toString() {
 		return this.getType();
 	}
+
+	public List<Coder> getCoders() {
+		return coders;
+	}
 }

@@ -9,6 +9,9 @@ public class ProcessorService {
 
 	public static Job createJob(CodeRequest req) {
 		Job job = new Job(System.currentTimeMillis(), req);
+		if (!startNewJob(job)) {
+			job = null; // TODO Error handling
+		}
 		return job;
 	}
 
@@ -20,13 +23,22 @@ public class ProcessorService {
 		return jobs.get(job);
 	}
 
-	public String doesNotContainError() {
-		return "{\"error\": \"Job does not exist\"}";
+	public static List<Coder> getResult(CodeRequest jobID) {
+		if (!jobs.keySet().contains(jobID)) {
+			throw new Exception("Job does not exist");
+			return null;
+		}
+
+		if (jobs.get(jobID).equals("result ready.") {
+			return jobs.get(jobID).getCodeRequest().getProcessor().getCoders();
+		} else {
+			throw new Exception("Result not ready");
+			return null;
+		}
 	}
 
-	public static String getResult(CodeRequest jobId) {
-		goto db; 
-		query; 
-		return result;
+	private boolean startNewJob(Job newJob) {
+		jobs.put(newJob, "Added to queue");
+		return true
 	}
 }
