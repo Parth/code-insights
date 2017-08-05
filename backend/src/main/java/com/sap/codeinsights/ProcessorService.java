@@ -1,9 +1,12 @@
 package com.sap.codeinsights;
 
-public class ProcessorService {
-	public Hashtable<Job, String> jobs;
+import java.util.Hashtable;
+import java.util.List;
 
-	public static String allProcessors {
+public class ProcessorService {
+	public static Hashtable<Job, String> jobs;
+
+	public static String allProcessors() {
 		return "[Documentation]";
 	}
 
@@ -15,30 +18,28 @@ public class ProcessorService {
 		return job;
 	}
 
-	public static String checkJobStatus(CodeRequest job) {
-		if (!jobs.keySet().contains(jobID)) {
-			return doesNotContainError();
+	public static String checkJobStatus(Job job) throws Exception {
+		if (!jobs.contains(job)) {
+			throw new Exception("Job does not exist");
 		}
 
 		return jobs.get(job);
 	}
 
-	public static List<Coder> getResult(CodeRequest jobID) {
-		if (!jobs.keySet().contains(jobID)) {
+	public static List<Coder> getResult(Job job) throws Exception {
+		if (!jobs.contains(job)) {
 			throw new Exception("Job does not exist");
-			return null;
 		}
 
-		if (jobs.get(jobID).equals("result ready.") {
-			return jobs.get(jobID).getCodeRequest().getProcessor().getCoders();
+		if (jobs.get(job).equals("result ready.")) {
+			return job.getCodeRequest().getProcessor().getCoders();
 		} else {
 			throw new Exception("Result not ready");
-			return null;
 		}
 	}
 
-	private boolean startNewJob(Job newJob) {
+	private static boolean startNewJob(Job newJob) {
 		jobs.put(newJob, "Added to queue");
-		return true
+		return true;
 	}
 }

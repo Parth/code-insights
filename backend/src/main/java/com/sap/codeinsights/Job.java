@@ -8,12 +8,12 @@ public class Job {
 	private long jobID;
 	private CodeRequest request;
 
-	public Job(int jobID, CodeRequest request) {
+	public Job(long jobID, CodeRequest request) {
 		this.jobID = jobID;
 		this.request = request;
 	}
 
-	public int getJobId() {
+	public long getJobId() {
 		return jobID;
 	}
 

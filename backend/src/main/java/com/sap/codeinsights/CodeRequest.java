@@ -26,7 +26,7 @@ public class CodeRequest {
 	}
 
 	public void setProcessor(Processor processor) {
-		this.processor = processor:
+		this.processor = processor;
 	}
 
     public JsonObject toJson() {

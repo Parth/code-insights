@@ -29,14 +29,9 @@ public class Server {
 			System.exit(1);
 		}
 
-		post("/repository-processor", (req, res) -> {
-			res.header("Access-Control-Allow-Origin", "*");
-			return API.processessRepository(req.body());
-		});
-
 		post("/new-request", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
-			return API.newJob(req.body());
+			return API.createJob(req.body());
 		});
 	}
 }
