@@ -29,15 +29,28 @@ public class CodeRequest {
 		this.processor = processor:
 	}
 
+    public JsonObject toJson() {
+        JsonParser parser = new JsonParser();
+        return parser.parse(this.toString()).getAsJsonObject();
+    }
+
 	@Override
 	public String toString() {
         Gson gson = new Gson();
         return gson.toJson(this);
     }
 
-    public JsonObject toJson() {
-        JsonParser parser = new JsonParser();
-        return parser.parse(this.toString()).getAsJsonObject();
-    }
+	@Override
+	public boolean equals(Object o) {
+		CodeRequest cr = (CodeRequest) o;
 
+		return cr.getURL().equalsIgnoreCase(this.getURL()) && 
+			cr.processor.getType().equalsIgnoreCase(this.getProcessor().getType());
+	}
+	
+	@Override
+	public int hashCode() {
+		String hash = url + ":" + processor.getType();
+		return hash.hashCode();
+	}
 }

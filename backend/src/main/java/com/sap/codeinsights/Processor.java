@@ -1,3 +1,5 @@
 package com.sap.codeinsights;
 
-public interface Processor { }
+public interface Processor {
+	public String getType();
+}

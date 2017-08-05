@@ -1,23 +1,30 @@
 package com.sap.codeinsights;
 
 public class ProcessorService {
-	public HashMap<String, String> jobs;
+	public Hashtable<Job, String> jobs;
 
 	public static String allProcessors {
 		return "[Documentation]";
 	}
 
-	public static String createJob(Request req) {
-		createNewJob;
-		return jobID;
+	public static Job createJob(CodeRequest req) {
+		Job job = new Job(System.currentTimeMillis(), req);
+		return job;
 	}
 
-	public static String jobStatus(String jobID) {
-		check job status;
-		return job status;
+	public static String checkJobStatus(CodeRequest job) {
+		if (!jobs.keySet().contains(jobID)) {
+			return doesNotContainError();
+		}
+
+		return jobs.get(job);
 	}
 
-	public static String getResult(String jobId) {
+	public String doesNotContainError() {
+		return "{\"error\": \"Job does not exist\"}";
+	}
+
+	public static String getResult(CodeRequest jobId) {
 		goto db; 
 		query; 
 		return result;
