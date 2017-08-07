@@ -3,17 +3,18 @@ package com.sap.codeinsights;
 import java.util.Hashtable;
 import java.util.List;
 
-public class ProcessorService implements Updatable {
+public class ProcessorService {
 	public static Hashtable<Job, String> jobs;
 
 	public static String allProcessors() {
+		// TODO should be creating a JSONArray or something similar
 		return "[Documentation]";
 	}
 
 	public static Job createJob(CodeRequest req) {
 		Job job = new Job(System.currentTimeMillis(), req);
 		if (!startNewJob(job)) {
-			job = null; // TODO Error handling
+			System.err.println("job is not alive");
 		}
 		return job;
 	}
@@ -32,19 +33,22 @@ public class ProcessorService implements Updatable {
 		}
 
 		if (jobs.get(job).equals("result ready.")) {
-			return job.getCodeRequest().getProcessor().getCoders();
+			return job.getCodeRequest().getResult();
 		} else {
 			throw new Exception("Result not ready");
 		}
 	}
 
 	private static boolean startNewJob(Job newJob) {
-		jobs.put(newJob, "Added to queue");
-		return true;
-	}
+		Runnable task = () -> {
+			jobs.put(newJob, "Initialized new thread");
+			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
+				jobs.put(newJob, update);
+			});
+		};
 
-	@Override
-	public void pushUpdate(String update) {
-		
+		Thread t = new Thread(task);
+		t.start();
+		return t.isAlive();
 	}
 }

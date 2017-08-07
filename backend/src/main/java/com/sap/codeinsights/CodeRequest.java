@@ -1,5 +1,7 @@
 package com.sap.codeinsights;
 
+import java.util.List;
+
 import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -7,6 +9,7 @@ import com.google.gson.JsonParser;
 public class CodeRequest {
 	private String url;
 	private String processorType;
+	private List<Coder> result;
 
 	public CodeRequest(String url, String processorType) {
 		this.url = url;
@@ -33,6 +36,14 @@ public class CodeRequest {
         JsonParser parser = new JsonParser();
         return parser.parse(this.toString()).getAsJsonObject();
     }
+
+	public void setResult(List<Coder> result) {
+		this.result = result;
+	}
+
+	public List<Coder> getResult() {
+		return result;
+	}
 
 	@Override
 	public String toString() {

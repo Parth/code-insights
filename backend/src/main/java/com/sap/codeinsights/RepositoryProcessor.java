@@ -45,7 +45,7 @@ public class RepositoryProcessor {
 		}
 	}
 
-	//returns anyone who ever committed anything to the repoistory
+	//returns anyone who ever committed anything to the repository
 	public static ArrayList<Coder> getCoders(Git repo) {
 		ArrayList<Coder> coders = new ArrayList<Coder>();
 		try {
@@ -66,13 +66,13 @@ public class RepositoryProcessor {
 
 
 	//TODO refactor to runProcessor
-	public static String process(CodeRequest r, Updateable updater) {
+	public static String process(CodeRequest r, Updatable updater) {
 		String response = "";
 		ArrayList<String> people = new ArrayList<String>();
 
 		Git repo = null;
 		try {
-			repo = cloneRepo(url);
+			repo = cloneRepo(r.getURL());
 			ArrayList<Coder> coders = getCoders(repo);
 			
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
@@ -83,11 +83,12 @@ public class RepositoryProcessor {
 			int i = 0;
 			for (File file : files) {
 				i++;
-				System.out.println((((double)i/files.size())*100) + "%");
+				updater.pushUpdate((((double)i/files.size())*100) + "%");
 				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible. 
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
+			r.setResult(coders);
 			response += coders.toString();
 
 		} catch (Exception e) {
