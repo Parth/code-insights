@@ -89,9 +89,10 @@ public class RepositoryProcessor {
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
+			updater.pushUpdate(new Update(0, "Done. Forming result"));
 			r.setResult(coders);
 			response += coders.toString();
-			updater.pushUpdate(new Update(1, "Done. Forming result"));
+			updater.pushUpdate(new Update(1, "Done."));
 
 		} catch (Exception e) {
 			e.printStackTrace();

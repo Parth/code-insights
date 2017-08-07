@@ -26,4 +26,9 @@ public class Update {
 		result = 31 * result + update.hashCode();
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return this.code + ":" + this.update;
+	}
 }

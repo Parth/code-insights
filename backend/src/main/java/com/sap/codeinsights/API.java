@@ -17,21 +17,21 @@ public class API {
 	public static String checkJobStatus(String json) throws Exception {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.checkJobStatus(job).toString();
+		return ProcessorService.getStatus(job).getCurrentStatus();
 	}
 
 	//TODO Handle exception
 	public static String getJobLog(String json) throws Exception {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.checkJobStatus(job).toString();
+		return ProcessorService.getStatus(job).getStatusLog();
 	}
 
 	//TODO handle exception
 	public static String getJobResult(String json) throws Exception {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.checkJobStatus(job).toString();
+		return ProcessorService.getResult(job).toString();
 	}
 
 	public static String processorsAvailable() {

@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ProcessorService {
-	public static Hashtable<Job, Status> jobs;
+	public static Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
 
 	public static String allProcessors() {
 		// TODO should be creating a JSONArray or something similar
@@ -19,21 +19,13 @@ public class ProcessorService {
 		return job;
 	}
 
-	public static String checkJobStatus(Job job) throws Exception {
-		if (!jobs.contains(job)) {
-			throw new Exception("Job does not exist");
-		}
-
-		return jobs.get(job).getCurrentStatus();
-	}
-
 	// TODO Save log to db and retreive if not done
-	public static String getJobLog(Job job) throws Exception {
-	    if (!jobs.contains(job)) {
-			throw new Exception("Job does not exist");
+	public static Status getStatus(Job job) {
+		if (!jobs.containsKey(job)) {
+			return null;
 		}
 
-		return jobs.get(job).getStatusLog();
+		return jobs.get(job);
 	}
 
 	public static List<Coder> getResult(Job job) throws Exception {
@@ -54,6 +46,7 @@ public class ProcessorService {
 			s.setStatusCode(0);
 			jobs.put(newJob, s);
 			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
+				System.out.println(update);
 				jobs.get(newJob).pushUpdate(update);
 			});
 		};
