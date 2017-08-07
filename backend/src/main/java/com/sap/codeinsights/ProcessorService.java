@@ -3,7 +3,7 @@ package com.sap.codeinsights;
 import java.util.Hashtable;
 import java.util.List;
 
-public class ProcessorService {
+public class ProcessorService implements Updatable {
 	public static Hashtable<Job, String> jobs;
 
 	public static String allProcessors() {
@@ -41,5 +41,10 @@ public class ProcessorService {
 	private static boolean startNewJob(Job newJob) {
 		jobs.put(newJob, "Added to queue");
 		return true;
+	}
+
+	@Override
+	public void pushUpdate(String update) {
+		
 	}
 }

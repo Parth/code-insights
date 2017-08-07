@@ -65,8 +65,8 @@ public class RepositoryProcessor {
 	}
 
 
-	//TODO refactor to runProcessors
-	public static String process(String url) {
+	//TODO refactor to runProcessor
+	public static String process(CodeRequest r, Updateable updater) {
 		String response = "";
 		ArrayList<String> people = new ArrayList<String>();
 
@@ -77,12 +77,14 @@ public class RepositoryProcessor {
 			
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 
+			// TODO: This will almost certainly need to be refactored in the future for more general use cases. 
 			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[] {"java"} , true);
 			
 			int i = 0;
 			for (File file : files) {
 				i++;
 				System.out.println((((double)i/files.size())*100) + "%");
+				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible. 
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 

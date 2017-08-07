@@ -6,11 +6,11 @@ import com.google.gson.JsonParser;
 
 public class CodeRequest {
 	private String url;
-	private Processor processor;
+	private String processorType;
 
-	public CodeRequest(String url, Processor processor) {
+	public CodeRequest(String url, String processorType) {
 		this.url = url;
-		this.processor = processor;
+		this.processorType = processorType;
 	}
 
 	public String getURL() {
@@ -21,12 +21,12 @@ public class CodeRequest {
 		this.url = url;
 	}
 
-	public Processor getProcessor() {
-		return processor;
+	public String getProcessorType() {
+		return processorType;
 	}
 
-	public void setProcessor(Processor processor) {
-		this.processor = processor;
+	public void setProcessorType(String processorType) {
+		this.processorType = processorType;
 	}
 
     public JsonObject toJson() {
@@ -45,12 +45,12 @@ public class CodeRequest {
 		CodeRequest cr = (CodeRequest) o;
 
 		return cr.getURL().equalsIgnoreCase(this.getURL()) && 
-			cr.processor.getType().equalsIgnoreCase(this.getProcessor().getType());
+			cr.getProcessorType().equalsIgnoreCase(this.getProcessorType());
 	}
 	
 	@Override
 	public int hashCode() {
-		String hash = url + ":" + processor.getType();
+		String hash = url + ":" + processorType;
 		return hash.hashCode();
 	}
 }
