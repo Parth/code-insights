@@ -8,6 +8,16 @@ public class Status {
 
     public Status(String currentStatus) {
         this.currentStatus = currentStatus;
+		this.statusLog = currentStatus;
+
+		this.statusCode = 0;
+    }
+
+    public Status(String currentStatus, int statusCode) {
+        this.currentStatus = currentStatus;
+		this.statusLog = currentStatus;
+
+		this.statusCode = statusCode;
     }
 
     public int getStatusCode() {
@@ -24,7 +34,7 @@ public class Status {
 
     public void setCurrentStatus(String currentStatus) {
         this.currentStatus = currentStatus;
-        statusLog += currentStatus + "\n";
+        statusLog += "\n" + currentStatus;
     }
 
 	public void pushUpdate(Update update) {
