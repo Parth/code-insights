@@ -20,6 +20,13 @@ public class API {
 		return ProcessorService.checkJobStatus(job).toString();
 	}
 
+	//TODO Handle exception
+	public static String getJobLog(String json) throws Exception {
+		Gson gson = new Gson(); 
+		Job job = gson.fromJson(json, Job.class);
+		return ProcessorService.checkJobStatus(job).toString();
+	}
+
 	//TODO handle exception
 	public static String getJobResult(String json) throws Exception {
 		Gson gson = new Gson(); 

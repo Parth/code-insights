@@ -29,9 +29,24 @@ public class Server {
 			System.exit(1);
 		}
 
-		post("/new-request", (req, res) -> {
+		post("/create-job", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
 			return API.createJob(req.body());
+		});
+
+		post("/check-job", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.checkJobStatus(req.body());
+		});
+
+		post("/job-log", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.getJobLog(req.body());
+		});
+
+		post("/job-result", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.getJobResult(req.body());
 		});
 	}
 }
