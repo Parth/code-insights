@@ -67,11 +67,14 @@ public class RepositoryProcessor {
 
 	//TODO refactor to runProcessor
 	public static String process(CodeRequest r, Updatable updater) {
+		updater.pushUpdate(new Update(0, "Received Request."));
+
 		String response = "";
 		ArrayList<String> people = new ArrayList<String>();
 
 		Git repo = null;
 		try {
+			updater.pushUpdate(new Update(0, "Cloning Repository"));
 			repo = cloneRepo(r.getURL());
 			ArrayList<Coder> coders = getCoders(repo);
 			
@@ -80,16 +83,15 @@ public class RepositoryProcessor {
 			// TODO: This will almost certainly need to be refactored in the future for more general use cases. 
 			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[] {"java"} , true);
 			
-			int i = 0;
 			for (File file : files) {
-				i++;
-				updater.pushUpdate((((double)i/files.size())*100) + "%");
-				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible. 
+				updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
+				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible? 
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
 			r.setResult(coders);
 			response += coders.toString();
+			updater.pushUpdate(new Update(1, "Done. Forming result"));
 
 		} catch (Exception e) {
 			e.printStackTrace();
