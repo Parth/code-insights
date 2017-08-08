@@ -31,4 +31,24 @@ public class ApiTest {
 		String response = API.getJobResult("");
 		assertEquals(response, "{\"error\":{\"message\":\"Null Job.\",\"errorNumber\":4}}");
 	}
+
+	@Test
+	public void successfulCreation() {
+		
+	}
+
+	@Test
+	public void successfulStatusCheck() {
+
+	}
+
+	@Test
+	public void successfulLogRead() {
+
+	}
+
+	@Test
+	public void successfulResultFetch() {
+
+	}
 }
