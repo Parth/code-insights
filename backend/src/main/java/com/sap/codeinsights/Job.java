@@ -34,8 +34,14 @@ public class Job {
         return parser.parse(this.toString()).getAsJsonObject();
     }
 
-	public Error valid() {
-		
+	public static Error getValidity(Job j) {
+		if (j == null) return new Error("Null Job.", Error.NULL_ERROR);
+
+		if (j.getCodeRequest() == null) return new Error("Missing Code Request");
+
+		// TODO clean this up
+		if (CodeRequest.getValidity(j.getCodeRequest()) != null) return CodeRequest.getValidity(j.getCodeRequest());
+		return null;
 	}
 
 	@Override

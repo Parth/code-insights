@@ -1,6 +1,10 @@
 package com.sap.codeinsights;
 
-public class Error {
+import com.google.gson.JsonObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+
+public class Error extends Exception {
 	public final String message; 
 	public final int errorNumber;
 
@@ -14,15 +18,21 @@ public class Error {
 		this.message = message;
 	}
 
-    public JsonObject toJson() {
-        JsonParser parser = new JsonParser();
-        return parser.parse(this.toString()).getAsJsonObject();
-    }
-
 	@Override
 	public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+		JsonObject json = new JsonObject();
+		json.addProperty("message", message);
+		json.addProperty("errorNumber", errorNumber);
+
+        JsonObject error = new JsonObject();
+		error.add("error", json);
+		return error.toString();
     }
 
+	public static final int MISSING_URL = 1;
+	public static final int INVALID_URL = 2;
+	public static final int INVALID_PROCESSOR = 3;
+	public static final int NULL_ERROR = 4;
+	public static final int JOB_NOT_FOUND = 5;
+	public static final int JOB_NOT_DONE = 6;
 }

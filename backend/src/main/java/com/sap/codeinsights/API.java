@@ -8,26 +8,58 @@ public class API {
 	public static String createJob(String json) {
 		Gson gson = new Gson(); 
 		CodeRequest request = gson.fromJson(json, CodeRequest.class);
-		return ProcessorService.createJob(request).toString();
+
+		if (CodeRequest.getValidity(request) != null) {
+			return CodeRequest.getValidity(request).toString();
+		}
+
+		try {
+			return ProcessorService.createJob(request).toString();
+		} catch (Error e) {
+			return e.toString();
+		}
 	}
 
 	public static String checkJobStatus(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.getStatus(job).getCurrentStatus();
+		if (Job.getValidity(job) != null) {
+			return Job.getValidity(job).toString();
+		}
+
+		try {
+			return ProcessorService.getStatus(job).getCurrentStatus();
+		} catch (Error e) {
+			return e.toString();
+		}
 	}
 
 	public static String getJobLog(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.getStatus(job).getStatusLog();
+		if (Job.getValidity(job) != null) {
+			return Job.getValidity(job).toString();
+		}
+
+		try {
+			return ProcessorService.getStatus(job).getStatusLog();
+		} catch (Error e) {
+			return e.toString();
+		}
 	}
 
-	//TODO handle exception
-	public static String getJobResult(String json) throws Exception {
+	public static String getJobResult(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
-		return ProcessorService.getResult(job).toString();
+		if (Job.getValidity(job) != null) {
+			return Job.getValidity(job).toString();
+		}
+
+		try {
+			return ProcessorService.getResult(job).toString();
+		} catch (Error e) {
+			return e.toString();
+		}
 	}
 
 	public static String processorsAvailable() {

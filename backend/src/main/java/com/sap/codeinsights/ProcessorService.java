@@ -11,7 +11,7 @@ public class ProcessorService {
 		return "[Documentation]";
 	}
 
-	public static Job createJob(CodeRequest req) {
+	public static Job createJob(CodeRequest req) throws Error {
 		Job job = new Job(System.currentTimeMillis(), req);
 		if (!startNewJob(job)) {
 			System.err.println("job is not alive");
@@ -20,23 +20,23 @@ public class ProcessorService {
 	}
 
 	// TODO Save log to db and retreive if not done
-	public static Status getStatus(Job job) {
+	public static Status getStatus(Job job) throws Error {
 		if (!jobs.containsKey(job)) {
-			return null;
+			throw new Error("Job does not exist.", Error.JOB_NOT_FOUND);
 		}
 
 		return jobs.get(job);
 	}
 
-	public static List<Coder> getResult(Job job) throws Exception {
-		if (!jobs.contains(job)) {
-			throw new Exception("Job does not exist");
+	public static List<Coder> getResult(Job job) throws Error {
+		if (!jobs.containsKey(job)) {
+			throw new Error("Job does not exist.", Error.JOB_NOT_FOUND);
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
 			return job.getCodeRequest().getResult();
 		} else {
-			throw new Exception("Result not ready");
+			throw new Error("Job not complete.", Error.JOB_NOT_DONE);
 		}
 	}
 

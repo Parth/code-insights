@@ -47,13 +47,19 @@ public class CodeRequest {
 		return result;
 	}
 
-	public Error getValidity() {
-		if (url == null || url.trim().empty()) return new Error("No URL Provided", MISSING_URL);
+	public static Error getValidity(CodeRequest o) {
+		if (o == null) return new Error("Null Code Request.", Error.NULL_ERROR);
+
+		//TODO this is a bit unclear, make it more clear;
+		String url = o.getURL();
+		String processorType = o.getProcessorType();
+
+		if (url == null || url.trim().isEmpty()) return new Error("No URL Provided", Error.MISSING_URL);
 
 		UrlValidator urlValidator = new UrlValidator();
-		if (!urlValidator.isValid(url)) return new Error("Invalid URL", INVALID_URL);
+		if (!urlValidator.isValid(url)) return new Error("Invalid URL", Error.INVALID_URL);
 
-		if (!processorType.equalsIgnoreCase("documentation")) return new Error("Invalid Processor Type", INVALID_PROCESSOR);
+		if (!processorType.equalsIgnoreCase("documentation")) return new Error("Invalid Processor Type", Error.INVALID_PROCESSOR);
 
 		return null;
 	}
@@ -77,8 +83,5 @@ public class CodeRequest {
 		String hash = url + ":" + processorType;
 		return hash.hashCode();
 	}
-
-	public static final int MISSING_URL = 1;
-	public static final int INVALID_URL = 2;
 
 }
