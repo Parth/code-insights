@@ -34,6 +34,10 @@ public class Job {
         return parser.parse(this.toString()).getAsJsonObject();
     }
 
+	public Error valid() {
+		
+	}
+
 	@Override
 	public String toString() {
         Gson gson = new Gson();

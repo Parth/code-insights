@@ -21,4 +21,5 @@ dependencies {
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.1.1.201511131810-r'
 	compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.2.10'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
 }

@@ -5,23 +5,19 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
 public class API {
-
-	//TODO StatusCode? 
 	public static String createJob(String json) {
 		Gson gson = new Gson(); 
 		CodeRequest request = gson.fromJson(json, CodeRequest.class);
 		return ProcessorService.createJob(request).toString();
 	}
 
-	//TODO Handle exception
-	public static String checkJobStatus(String json) throws Exception {
+	public static String checkJobStatus(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
 		return ProcessorService.getStatus(job).getCurrentStatus();
 	}
 
-	//TODO Handle exception
-	public static String getJobLog(String json) throws Exception {
+	public static String getJobLog(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
 		return ProcessorService.getStatus(job).getStatusLog();
