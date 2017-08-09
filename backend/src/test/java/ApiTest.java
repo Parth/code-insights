@@ -1,5 +1,7 @@
 package com.sap.codeinsights;
 
+import com.google.gson.JsonObject;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -16,7 +18,6 @@ public class ApiTest {
 	@Test
 	public void statusFail() {
 		String response = API.checkJobStatus("");
-		System.out.println(response);
 		assertEquals(response, "{\"error\":{\"message\":\"Null Job.\",\"errorNumber\":4}}");
 	}
 
@@ -34,12 +35,38 @@ public class ApiTest {
 
 	@Test
 	public void successfulCreation() {
-		
+		JsonObject json = new JsonObject();
+		json.addProperty("url", REPO_DEST);
+		json.addProperty("processorType", "Documentation");
+
+		String response = API.createJob(json.toString());
+		assertTrue(response.contains("jobID"));
+		assertTrue(response.contains("request"));
+		assertTrue(response.contains("url"));
+		assertTrue(response.contains("processorType"));
+		assertFalse(response.contains("error"));
+	}
+
+	@Test
+	public void testDuplicateJobCreation() {
+		//TODO not supported yet
 	}
 
 	@Test
 	public void successfulStatusCheck() {
+		JsonObject json = new JsonObject();
+		json.addProperty("url", REPO_DEST);
+		json.addProperty("processorType", "Documentation");
 
+		String response = API.createJob(json.toString());
+		assertTrue(response.contains("jobID"));
+		assertTrue(response.contains("request"));
+		assertTrue(response.contains("url"));
+		assertTrue(response.contains("processorType"));
+		assertFalse(response.contains("error"));
+
+		String status = API.checkJobStatus(response);
+		System.out.println(status);
 	}
 
 	@Test

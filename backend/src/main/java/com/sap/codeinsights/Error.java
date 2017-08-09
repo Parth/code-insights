@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 
+// TODO perhaps rename to API error to make clear it's distinction from Exception
 public class Error extends Exception {
 	public final String message; 
 	public final int errorNumber;
@@ -35,4 +36,5 @@ public class Error extends Exception {
 	public static final int NULL_ERROR = 4;
 	public static final int JOB_NOT_FOUND = 5;
 	public static final int JOB_NOT_DONE = 6;
+	public static final int JOB_ALREADY_STARTED = 7;
 }
