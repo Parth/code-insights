@@ -12,10 +12,14 @@ public class ProcessorService {
 	}
 
 	//TODO Don't repeat a job request that's already being worked on
-	public static Job createJob(CodeRequest req) throws Error {
+	public synchronized static Job createJob(CodeRequest req) throws Error {
 		Job job = new Job(System.currentTimeMillis(), req);
-		if (alreadyRunning(req)) {
-			throw new Error("That request is already being processed. Use /check-job to check it's status.", Error.JOB_ALREADY_STARTED);
+		if (findJobByRequest(req) != null) {
+			if (jobs.get(findJobByRequest(req)).getStatusCode() == 1) {
+				jobs.remove(findJobByRequest(req));
+			} else {
+				throw new Error("That request is already being processed. Use /check-job to check it's status.", Error.JOB_ALREADY_STARTED);
+			}
 		}
 
 		if (!startedSuccessfully(job)) {
@@ -39,7 +43,9 @@ public class ProcessorService {
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
-			return job.getCodeRequest().getResult();
+			List<Coder> ret = job.getCodeRequest().getResult();
+			jobs.remove(job);
+			return ret;
 		} else {
 			throw new Error("Job not complete.", Error.JOB_NOT_DONE);
 		}
@@ -61,7 +67,13 @@ public class ProcessorService {
 		return t.isAlive();
 	}
 
-	private static boolean alreadyRunning(CodeRequest req) {
-		return jobs.values().contains(req);
+	private static Job findJobByRequest(CodeRequest req) {
+		for (Job j : jobs.keySet()) {
+			if (j.getCodeRequest().equals(req)) {
+				return j;
+			}
+		}
+
+		return null;
 	}
 }

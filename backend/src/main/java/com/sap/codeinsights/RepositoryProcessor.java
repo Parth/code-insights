@@ -22,7 +22,7 @@ import com.sap.codeinsights.Coder;
 import org.apache.commons.io.FileUtils;
 
 public class RepositoryProcessor {
-	public static Git cloneRepo(String url) {
+	public synchronized static Git cloneRepo(String url) {
 		try { 
 			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
 
@@ -46,7 +46,7 @@ public class RepositoryProcessor {
 	}
 
 	//returns anyone who ever committed anything to the repository
-	public static ArrayList<Coder> getCoders(Git repo) {
+	public synchronized static ArrayList<Coder> getCoders(Git repo) {
 		ArrayList<Coder> coders = new ArrayList<Coder>();
 		try {
 			

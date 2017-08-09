@@ -19,7 +19,16 @@ public class ProcessorServiceTest {
 	public void createNewJob() throws InterruptedException, Error { 
 		CodeRequest cr = new CodeRequest(REPO_DEST, "Documentation");
 
-		Job j = ProcessorService.createJob(cr);
+		Job j = null;
+
+		for (int i = 0; (j == null) && i < 5; i++) { 
+			try {
+				j = ProcessorService.createJob(cr);
+			} catch (Error e) {
+				Thread.sleep(2000);
+			}
+		}
+
 		Status s = null;
 
 		assertEquals(j.getCodeRequest(), cr);
@@ -47,30 +56,11 @@ public class ProcessorServiceTest {
 		assertTrue(s.getStatusLog().contains("Test1.java"));
 		assertTrue(s.getStatusLog().contains("Test2.java"));
 		assertTrue(s.getCurrentStatus().equals("Done."));
-	}
-
-	@Test
-	public void getResultTest() throws InterruptedException, Error { 
-		CodeRequest cr = new CodeRequest(REPO_DEST, "Documentation");
-
-		Job j = ProcessorService.createJob(cr);
-		Status s = null;
-
-		for (int i = 0; (s == null) && i < 5; i++) { 
-			try {
-				s = ProcessorService.getStatus(j);
-			} catch (Error e) {
-				Thread.sleep(1000);
-			}
-		}
-
-		for (int i = 0; (s.getStatusCode() != 1) && i < 5; i++) { 
-			Thread.sleep(1000);
-		}
-
 		List<Coder> coders = ProcessorService.getResult(j);
 		System.out.println(coders);
 		assertNotNull(coders);
 		assertTrue(coders.size() > 2);
 	}
+
 }
+
