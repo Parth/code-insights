@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Server {
 	public static boolean setupServer(){ 
-		File file = new File(System.getProperty("user.home") + "/code-insights");
+		File file = new File(System.getProperty("user.home") + "/code-insights-working-directory");
 		try {
 			if (!file.exists()) {
 				Files.createDirectory(file.toPath());
