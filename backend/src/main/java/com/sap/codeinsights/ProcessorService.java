@@ -4,7 +4,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ProcessorService {
-	public static Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
+	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
+	public static final Hashtable<Job, List<Coder>> results = new Hashtable<Job, List<Coder>>();
 
 	public static String allProcessors() {
 		// TODO should be creating a JSONArray or something similar
@@ -42,7 +43,7 @@ public class ProcessorService {
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
-			List<Coder> ret = job.getCodeRequest().getResult();
+			List<Coder> ret = results.get(job);
 			jobs.remove(job);
 			return ret;
 		} else {
@@ -51,14 +52,15 @@ public class ProcessorService {
 	}
 
 	private static boolean startedSuccessfully(Job newJob) {
+		Status s = new Status("Request Created");
+		s.setStatusCode(0);
+		jobs.put(newJob, s);
 		Runnable task = () -> {
-			Status s = new Status("Request Created");
-			s.setStatusCode(0);
-			jobs.put(newJob, s);
 			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
 				jobs.get(newJob).pushUpdate(update);
 			}, (result) -> {
-				System.out.println("1234: " + result);
+				results.put(newJob, (List<Coder>) result);
+				System.out.println("1234: " + results);
 			});
 		};
 

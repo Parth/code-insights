@@ -57,7 +57,9 @@ public class ApiTest {
 
 		assertTrue(status.contains("Done."));
 
+		System.out.println("SLEEPING NOW");
 		Thread.sleep(1000);
+		System.out.println("Fetching result now");
 		String response3 = API.getJobResult(response);
 		System.out.println(response3);
 		assertTrue(response3.contains("parth"));
