@@ -2,6 +2,7 @@ import React from 'react';
 
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 
 import {
 	Table,
@@ -19,39 +20,97 @@ export default class Setup extends React.Component {
 
 		this.state = { 
 			url: "",
-			data: "",
-			success: false
+			job: "",
+			jobStatus: "",
+			result: "",
+			error: ""
 		};
 
+		this.checkOnJob = this.checkOnJob.bind(this);
+		this.processStatus = this.processStatus.bind(this);
 		this.sendJobToServer = this.sendJobToServer.bind(this);
-		this.updateState = this.updateState.bind(this);
+		this.getResult = this.getResult.bind(this);
+		this.processResult = this.processResult.bind(this);
 	}
 
-	updateState = (data) => { 
+	checkOnJob = () => {
+		console.log(this.state.job);
+		
+		fetch("http://127.0.0.1:8000/check-job", 
+		{
+			method: "POST",
+			body: JSON.stringify(this.state.job)
+		})
+		.then(function(res) {return res.json(); })
+		.then(this.processStatus);
+		if (this.state.jobStatus.statusCode !== 1) {
+			setTimeout(this.checkOnJob, 500);
+		}
+	}
+
+	processJob = (data) => { 
+		console.log(data);
 		this.setState({ 
-			data: data,
-			success: true
+			job: data,
 		});
+
+		this.checkOnJob();
+	}
+
+	processResult = (data) => {
+		this.setState({
+			result: data
+		});
+	}
+
+	getResult = () => {
+		console.log(this.state.job);
+		
+		fetch("http://127.0.0.1:8000/job-result", 
+		{
+			method: "POST",
+			body: JSON.stringify(this.state.job)
+		})
+		.then(function(res) {return res.json(); })
+		.then(this.processResult);
+	}
+
+	processStatus = (data) => {
+		console.log(this.state);
+		if (data.error !== undefined) {
+			this.setState({
+				error: data
+			});
+		} else {
+			this.setState({
+				jobStatus: data
+			});
+
+			if (data.statusCode === 1) {
+				this.getResult();
+			}
+		}
 	}
 
 
 	sendJobToServer = () => { 
 		var payload = {
-			url: this.state.url
+			url: this.state.url,
+			processorType: "Documentation"
 		};
 		
-		fetch("http://127.0.0.1:4567/repository-processor", 
+		fetch("http://127.0.0.1:8000/create-job", 
 		{
 			method: "POST",
-			body: this.state.url
+			body: JSON.stringify(payload)
 		})
 		.then(function(res) {return res.json(); })
-		.then(this.updateState);
+		.then(this.processJob);
 	};
 	
 	render() {
 		let table = null;
-		if (this.state.success) {
+		if (this.state.result !== "") {
 			table = (
 			  <Table>
 				<TableHeader>
@@ -64,7 +123,7 @@ export default class Setup extends React.Component {
 				  </TableRow>
 				</TableHeader>
 				<TableBody>
-					{this.state.data.map((datum) => (
+					{this.state.result.map((datum) => (
 						<TableRow>
 							<TableRowColumn>{datum.name}</TableRowColumn>
 							<TableRowColumn>{datum.email}</TableRowColumn>
@@ -90,6 +149,11 @@ export default class Setup extends React.Component {
 					label="Submit" 
 					primary={true} 
 					onTouchTap={this.sendJobToServer} />
+				<Card>
+					<CardText>
+						{this.state.jobStatus.statusLog}
+					</CardText>
+				</Card>
 				{table}
 			</div>
 		);

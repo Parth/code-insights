@@ -24,6 +24,7 @@ public class Server {
 	}
 
 	public static void main(String args[]) {
+		port(8000);
 		if (!setupServer()) {
 			System.err.println("Server could not be initialized, it was a good try, shutting down now.");
 			System.exit(1);
