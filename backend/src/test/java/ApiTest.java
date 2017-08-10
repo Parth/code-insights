@@ -67,19 +67,21 @@ public class ApiTest {
 
 	@Test
 	public void badURLTest() {
+		JsonObject json = new JsonObject();
+		json.addProperty("url", "this is a bad url");
+		json.addProperty("processorType", "Documentation");
+
+		String response = API.createJob(json.toString());
+		assertTrue(response.contains("Invalid URL"));
 	}
 
 	@Test
 	public void badProcessorTest() {
-	}
+		JsonObject json = new JsonObject();
+		json.addProperty("url", REPO_DEST);
+		json.addProperty("processorType", "mentation");
 
-	@Test
-	public void successfulLogRead() {
-
-	}
-
-	@Test
-	public void successfulResultFetch() {
-
+		String response = API.createJob(json.toString());
+		assertTrue(response.contains("Invalid Processor"));
 	}
 }
