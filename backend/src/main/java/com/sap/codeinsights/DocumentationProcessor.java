@@ -18,11 +18,11 @@ import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.comments.Comment;
 
-public class DocumentationProcessor extends VoidVisitorAdapter {
+public class DocumentationProcessor extends VoidVisitorAdapter implements Processor {
 	private File file;
 	private List<Coder> coders;
 	private Git repo;
-	
+
 	public DocumentationProcessor(File file, Git repo, List<Coder> coders) throws FileNotFoundException, ParseException, IOException {
 		super();
 		this.file = file;
@@ -110,5 +110,19 @@ public class DocumentationProcessor extends VoidVisitorAdapter {
 		} else {
 			noComments(n);
 		}
+	}
+
+	@Override
+	public String getType() {
+		return "DocumentationProcessor";
+	}
+
+	@Override
+	public String toString() {
+		return this.getType();
+	}
+
+	public List<Coder> getCoders() {
+		return coders;
 	}
 }

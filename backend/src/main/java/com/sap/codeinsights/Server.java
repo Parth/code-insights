@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class Server {
-
 	public static boolean setupServer(){ 
 		File file = new File(System.getProperty("user.home") + "/code-insights-working-directory");
 		try {
@@ -25,15 +24,25 @@ public class Server {
 	}
 
 	public static void main(String args[]) {
+		port(8000);
 		if (!setupServer()) {
-			System.err.println("Server could not be initialized, shutting down now.");
+			System.err.println("Server could not be initialized, it was a good try, shutting down now.");
 			System.exit(1);
 		}
 
-		post("/repository-processor", (req, res) -> {
+		post("/create-job", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
-			String ret = API.processessRepository(req.body());
-			return ret;
+			return API.createJob(req.body());
+		});
+
+		post("/check-job", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.checkJobStatus(req.body());
+		});
+
+		post("/job-result", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.getJobResult(req.body());
 		});
 	}
 }

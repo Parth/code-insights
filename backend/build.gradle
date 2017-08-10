@@ -3,13 +3,23 @@ apply plugin: 'application'
 mainClassName = "com.sap.codeinsights.Server"
 
 repositories {
-    jcenter()
+	jcenter()
+}
+
+allprojects {
+	gradle.projectsEvaluated {
+		tasks.withType(JavaCompile) {
+			options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		}
+	}
 }
 
 dependencies {
 	compile 'com.sparkjava:spark-core:2.3'
 	compile 'junit:junit:4.12'
+	compile 'com.google.code.gson:gson:2.2.4'
 	compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.1.1.201511131810-r'
 	compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.2.10'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
 }

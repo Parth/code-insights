@@ -14,6 +14,7 @@ public class DocumentationProcessorTest {
 
     @Test
 	public void testContributorCount() {
+		System.out.println(System.currentTimeMillis());
 		Git testRepo = RepositoryProcessor.cloneRepo(REPO_DEST);
         assertEquals("There should only be 3 Contributors", RepositoryProcessor.getCoders(testRepo).size(), 3);
     }

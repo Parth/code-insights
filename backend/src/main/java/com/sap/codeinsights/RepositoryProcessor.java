@@ -22,8 +22,7 @@ import com.sap.codeinsights.Coder;
 import org.apache.commons.io.FileUtils;
 
 public class RepositoryProcessor {
-
-	public static Git cloneRepo(String url) {
+	public synchronized static Git cloneRepo(String url) {
 		try { 
 			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
 
@@ -46,8 +45,8 @@ public class RepositoryProcessor {
 		}
 	}
 
-	//returns anyone who ever committed anything to the repoistory
-	public static ArrayList<Coder> getCoders(Git repo) {
+	//returns anyone who ever committed anything to the repository
+	public synchronized static ArrayList<Coder> getCoders(Git repo) {
 		ArrayList<Coder> coders = new ArrayList<Coder>();
 		try {
 			
@@ -66,28 +65,34 @@ public class RepositoryProcessor {
 	}
 
 
-	//TODO refactor to runProcessors
-	public static String process(String url) {
+	//TODO refactor to runProcessor
+	public static String process(CodeRequest r, Updatable updater, Resultable result) {
+		updater.pushUpdate(new Update(0, "Received Request."));
+
 		String response = "";
 		ArrayList<String> people = new ArrayList<String>();
 
 		Git repo = null;
 		try {
-			repo = cloneRepo(url);
+			updater.pushUpdate(new Update(0, "Cloning Repository"));
+			repo = cloneRepo(r.getURL());
 			ArrayList<Coder> coders = getCoders(repo);
 			
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 
+			// TODO: This will almost certainly need to be refactored in the future for more general use cases. 
 			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[] {"java"} , true);
 			
-			int i = 0;
 			for (File file : files) {
-				i++;
-				System.out.println((((double)i/files.size())*100) + "%");
+				updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
+				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible? 
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
+			updater.pushUpdate(new Update(0, "Forming result"));
+			result.setResult(coders);
 			response += coders.toString();
+			updater.pushUpdate(new Update(1, "Done."));
 
 		} catch (Exception e) {
 			e.printStackTrace();
