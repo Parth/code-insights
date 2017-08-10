@@ -57,6 +57,8 @@ public class ProcessorService {
 			jobs.put(newJob, s);
 			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
 				jobs.get(newJob).pushUpdate(update);
+			}, (result) -> {
+				System.out.println("1234: " + result);
 			});
 		};
 

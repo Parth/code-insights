@@ -39,11 +39,6 @@ public class Server {
 			return API.checkJobStatus(req.body());
 		});
 
-		post("/job-log", (req, res) -> {
-			res.header("Access-Control-Allow-Origin", "*");
-			return API.getJobLog(req.body());
-		});
-
 		post("/job-result", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
 			return API.getJobResult(req.body());

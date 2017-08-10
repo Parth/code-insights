@@ -22,12 +22,6 @@ public class ApiTest {
 	}
 
 	@Test
-	public void logFail() {
-		String response = API.getJobLog("");
-		assertEquals(response, "{\"error\":{\"message\":\"Null Job.\",\"errorNumber\":4}}");
-	}
-
-	@Test
 	public void resultFail() {
 		String response = API.getJobResult("");
 		assertEquals(response, "{\"error\":{\"message\":\"Null Job.\",\"errorNumber\":4}}");
@@ -51,8 +45,22 @@ public class ApiTest {
 		assertTrue(response.contains("processorType"));
 		assertFalse(response.contains("error"));
 
+		String response2 = API.createJob(json.toString());
+		assertTrue(response2.contains("error"));
+
 		String status = API.checkJobStatus(response);
-		System.out.println(status);
+		
+		while (!status.contains("Done.")) { 
+			Thread.sleep(500);
+			status = API.checkJobStatus(response);
+		}
+
+		assertTrue(status.contains("Done."));
+
+		Thread.sleep(1000);
+		String response3 = API.getJobResult(response);
+		System.out.println(response3);
+		assertTrue(response3.contains("parth"));
 	}
 
 	@Test

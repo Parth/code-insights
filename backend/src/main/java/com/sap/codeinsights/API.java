@@ -34,20 +34,6 @@ public class API {
 		}
 	}
 
-	public static String getJobLog(String json) {
-		Gson gson = new Gson(); 
-		Job job = gson.fromJson(json, Job.class);
-		if (Job.getValidity(job) != null) {
-			return Job.getValidity(job).toString();
-		}
-
-		try {
-			return ProcessorService.getStatus(job).getStatusLog();
-		} catch (Error e) {
-			return e.toString();
-		}
-	}
-
 	public static String getJobResult(String json) {
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);

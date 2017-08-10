@@ -66,7 +66,7 @@ public class RepositoryProcessor {
 
 
 	//TODO refactor to runProcessor
-	public static String process(CodeRequest r, Updatable updater) {
+	public static String process(CodeRequest r, Updatable updater, Resultable result) {
 		updater.pushUpdate(new Update(0, "Received Request."));
 
 		String response = "";
@@ -89,8 +89,8 @@ public class RepositoryProcessor {
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 
-			updater.pushUpdate(new Update(0, "Done. Forming result"));
-			r.setResult(coders);
+			updater.pushUpdate(new Update(0, "Forming result"));
+			result.setResult(coders);
 			response += coders.toString();
 			updater.pushUpdate(new Update(1, "Done."));
 
