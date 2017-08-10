@@ -28,7 +28,7 @@ public class API {
 		}
 
 		try {
-			return ProcessorService.getStatus(job).getCurrentStatus();
+			return ProcessorService.getStatus(job).toString();
 		} catch (Error e) {
 			return e.toString();
 		}

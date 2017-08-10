@@ -11,7 +11,6 @@ public class ProcessorService {
 		return "[Documentation]";
 	}
 
-	//TODO Don't repeat a job request that's already being worked on
 	public synchronized static Job createJob(CodeRequest req) throws Error {
 		Job job = new Job(System.currentTimeMillis(), req);
 		if (findJobByRequest(req) != null) {
@@ -51,7 +50,6 @@ public class ProcessorService {
 		}
 	}
 
-	// TODO: Starting the same processor on the same url will cause issues as they'll both try to modify the same files while they clone the repo. Prevent the same code requests from getting run. And make sure that processors don't write to the disk.
 	private static boolean startedSuccessfully(Job newJob) {
 		Runnable task = () -> {
 			Status s = new Status("Request Created");

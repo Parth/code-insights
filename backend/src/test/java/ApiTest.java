@@ -50,39 +50,9 @@ public class ApiTest {
 		assertTrue(response.contains("url"));
 		assertTrue(response.contains("processorType"));
 		assertFalse(response.contains("error"));
-	}
-
-	@Test
-	public void testDuplicateJobCreation() {
-		JsonObject json = new JsonObject();
-		json.addProperty("url", REPO_DEST);
-		json.addProperty("processorType", "Documentation");
-
-		String response = API.createJob(json.toString());
-		response = API.createJob(json.toString());
-		System.out.println(response);
-		assertTrue(response.contains("error"));
-	}
-
-	@Test
-	public void successfulStatusCheck() throws InterruptedException {
-		JsonObject json = new JsonObject();
-		json.addProperty("url", REPO_DEST);
-		json.addProperty("processorType", "Documentation");
-
-
-		String response = API.createJob(json.toString());
-		for (int i = 0; i < 5 && response.contains("error"); i++) {
-			Thread.sleep(1000);
-			response = API.createJob(json.toString());
-		}
-		assertTrue(response.contains("jobID"));
-		assertTrue(response.contains("request"));
-		assertTrue(response.contains("url"));
-		assertTrue(response.contains("processorType"));
-		assertFalse(response.contains("error"));
 
 		String status = API.checkJobStatus(response);
+		System.out.println(status);
 	}
 
 	@Test

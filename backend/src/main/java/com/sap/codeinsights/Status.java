@@ -1,5 +1,7 @@
 package com.sap.codeinsights;
 
+import com.google.gson.Gson;
+
 //TODO replace all int status codes with enums
 public class Status {
     private int statusCode;
@@ -46,4 +48,9 @@ public class Status {
         return statusLog;
     }
 
+	@Override
+	public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

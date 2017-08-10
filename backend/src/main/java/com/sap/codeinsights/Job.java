@@ -54,4 +54,10 @@ public class Job {
 	public int hashCode() {
 		return Long.hashCode(jobID);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		Job j = (Job) o;
+		return j.getJobId() == jobID && j.getCodeRequest().equals(j.getCodeRequest());
+	}
 }

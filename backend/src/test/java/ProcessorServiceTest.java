@@ -25,7 +25,7 @@ public class ProcessorServiceTest {
 			try {
 				j = ProcessorService.createJob(cr);
 			} catch (Error e) {
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 			}
 		}
 
