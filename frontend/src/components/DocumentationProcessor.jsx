@@ -13,7 +13,7 @@ import {
 	TableRowColumn,
 } from 'material-ui/Table';
 
-export default class Setup extends React.Component {
+export default class DocumentationProcessor extends React.Component {
 	
 	constructor(props) {
 		super(props);
@@ -31,6 +31,21 @@ export default class Setup extends React.Component {
 		this.sendJobToServer = this.sendJobToServer.bind(this);
 		this.getResult = this.getResult.bind(this);
 		this.processResult = this.processResult.bind(this);
+	}
+
+	sendJobToServer = () => {
+		var payload = {
+			url: this.state.url,
+			processorType: "Documentation"
+		};
+		
+		fetch("http://127.0.0.1:8000/create-job", 
+		{
+			method: "POST",
+			body: JSON.stringify(payload)
+		})
+		.then(function(res) {return res.json(); })
+		.then(this.processJob);
 	}
 
 	checkOnJob = () => {
@@ -91,22 +106,6 @@ export default class Setup extends React.Component {
 			}
 		}
 	}
-
-
-	sendJobToServer = () => { 
-		var payload = {
-			url: this.state.url,
-			processorType: "Documentation"
-		};
-		
-		fetch("http://127.0.0.1:8000/create-job", 
-		{
-			method: "POST",
-			body: JSON.stringify(payload)
-		})
-		.then(function(res) {return res.json(); })
-		.then(this.processJob);
-	};
 	
 	render() {
 		let table = null;
