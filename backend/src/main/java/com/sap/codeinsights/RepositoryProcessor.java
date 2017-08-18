@@ -1,45 +1,82 @@
 package com.sap.codeinsights;
- 
-// TODO remove * imports
-import java.io.*;
-import java.util.*;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.Files;
-import java.nio.file.FileVisitOption;
-
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
-import org.eclipse.jgit.api.LogCommand;
-import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.lib.PersonIdent;
-
-import com.sap.codeinsights.Coder;
-
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserInfo;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.SshTransport;
+
+import java.io.File;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class RepositoryProcessor {
 	public synchronized static Git cloneRepo(String url) {
-		try { 
+		try {
 			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
 
 			if (file.exists()) {
 				Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)
-					.sorted(Comparator.reverseOrder())
-					.map(Path::toFile)
-					.forEach(File::delete);
+						.sorted(Comparator.reverseOrder())
+						.map(Path::toFile)
+						.forEach(File::delete);
 			}
 
-			Git result = Git.cloneRepository()
+
+			SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
+				@Override
+				protected void configure(OpenSshConfig.Host host, Session session) {
+					session.setConfig("StrictHostKeyChecking", "no");
+					session.setUserInfo(new UserInfo() {
+						@Override
+						public String getPassphrase() { return null; }
+
+						@Override
+						public String getPassword() { return null; }
+
+						@Override
+						public boolean promptPassword(String message) { return false; }
+
+						@Override
+						public boolean promptPassphrase(String message) { return true; }
+
+						@Override
+						public boolean promptYesNo(String message) { return false; }
+
+						@Override
+						public void showMessage(String message) { }
+					});
+				}
+			};
+
+			Git result = null;
+			if (StringUtils.containsIgnoreCase("https", url)) {
+				result = Git.cloneRepository()
+					.setURI(url)
+					.setDirectory(file)
+					.setTransportConfigCallback(transport -> {
+						SshTransport sshTransport = (SshTransport) transport;
+						sshTransport.setSshSessionFactory(sshSessionFactory);
+					})
+					.call();
+			} else {
+				result = Git.cloneRepository()
 					.setURI(url)
 					.setDirectory(file)
 					.call();
-			return result;
+			}
 
-		} catch(Exception e) {
+			return result;
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -49,10 +86,10 @@ public class RepositoryProcessor {
 	public synchronized static ArrayList<Coder> getCoders(Git repo) {
 		ArrayList<Coder> coders = new ArrayList<Coder>();
 		try {
-			
+
 			Iterable<RevCommit> commits = repo.log().all().call();
 			for (RevCommit rc : commits) {
-				 Coder coder = new Coder(rc.getAuthorIdent());
+				Coder coder = new Coder(rc.getAuthorIdent());
 				if (!coders.contains(coder)) {
 					coders.add(coder);
 				}
@@ -76,16 +113,17 @@ public class RepositoryProcessor {
 		try {
 			updater.pushUpdate(new Update(0, "Cloning Repository"));
 			repo = cloneRepo(r.getURL());
+
 			ArrayList<Coder> coders = getCoders(repo);
-			
+
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 
-			// TODO: This will almost certainly need to be refactored in the future for more general use cases. 
-			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[] {"java"} , true);
-			
+			// TODO: This will almost certainly need to be refactored in the future for more general use cases.
+			List<File> files = (List<File>) FileUtils.listFiles(repoDir, new String[]{"java"}, true);
+
 			for (File file : files) {
 				updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
-				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible? 
+				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible?
 				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
 			}
 

@@ -22,4 +22,5 @@ dependencies {
 	compile group: 'com.github.javaparser', name: 'javaparser-core', version: '3.2.10'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
 	compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 }
