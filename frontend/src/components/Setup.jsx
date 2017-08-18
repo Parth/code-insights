@@ -33,34 +33,9 @@ export default class DocumentationProcessor extends React.Component {
 		this.processResult = this.processResult.bind(this);
 	}
 
-	sendJobToServer = () => {
-		var payload = {
-			url: this.state.url,
-			processorType: "Documentation"
-		};
-		
-		fetch("http://127.0.0.1:8000/create-job", 
-		{
-			method: "POST",
-			body: JSON.stringify(payload)
-		})
-		.then(function(res) {return res.json(); })
-		.then(this.processJob);
-	}
-
 	checkOnJob = () => {
 		console.log(this.state.job);
 		
-		fetch("http://127.0.0.1:8000/check-job", 
-		{
-			method: "POST",
-			body: JSON.stringify(this.state.job)
-		})
-		.then(function(res) {return res.json(); })
-		.then(this.processStatus);
-		if (this.state.jobStatus.statusCode !== 1) {
-			setTimeout(this.checkOnJob, 500);
-		}
 	}
 
 	processJob = (data) => { 
@@ -78,65 +53,8 @@ export default class DocumentationProcessor extends React.Component {
 		});
 	}
 
-	getResult = () => {
-		console.log(this.state.job);
-		
-		fetch("http://127.0.0.1:8000/job-result", 
-		{
-			method: "POST",
-			body: JSON.stringify(this.state.job)
-		})
-		.then(function(res) {return res.json(); })
-		.then(this.processResult);
-	}
-
-	processStatus = (data) => {
-		console.log(this.state);
-		if (data.error !== undefined) {
-			this.setState({
-				error: data
-			});
-		} else {
-			this.setState({
-				jobStatus: data
-			});
-
-			if (data.statusCode === 1) {
-				this.getResult();
-			}
-		}
-	}
 	
 	render() {
-		let table = null;
-		if (this.state.result !== "") {
-			table = (
-			  <Table>
-				<TableHeader>
-				  <TableRow>
-					<TableHeaderColumn>Name</TableHeaderColumn>
-					<TableHeaderColumn>Email</TableHeaderColumn>
-					<TableHeaderColumn>Methods Contributed</TableHeaderColumn>
-					<TableHeaderColumn>Methods Documented</TableHeaderColumn>
-					<TableHeaderColumn>Methods Not Documented</TableHeaderColumn>
-				  </TableRow>
-				</TableHeader>
-				<TableBody>
-					{this.state.result.map((datum) => (
-						<TableRow>
-							<TableRowColumn>{datum.name}</TableRowColumn>
-							<TableRowColumn>{datum.email}</TableRowColumn>
-							<TableRowColumn>{datum.methodsContributed}</TableRowColumn>
-							<TableRowColumn>{datum.documentedMethods}</TableRowColumn>
-							<TableRowColumn>{datum.undocumentedMethods}</TableRowColumn>
-						</TableRow>
-					))}
-				</TableBody>
-			  </Table>
-			);
-		} else {
-			table = (<div></div>);
-		}
 
 		return (
 			<div>

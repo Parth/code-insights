@@ -19,6 +19,12 @@ class App extends React.Component {
 		}
 	}
 
+	createRequest = (request) => {
+		this.setState({
+			request: request
+		});
+	}
+
 	render () {
 		var processors = null;
 		if (this.state.request === "") {
@@ -26,7 +32,7 @@ class App extends React.Component {
 		} else {
 			processors = (
 				<DocumentationProcessor
-					request={this.state.request} />
+					url={this.state.request} />
 			);
 		}
 		return (
