@@ -19,22 +19,16 @@ class App extends React.Component {
 		}
 	}
 
-	createRequest = (url) => {
-		var payload = {
-			url: url,
-			processorType: "Documentation"
-		};
-		
-		fetch("http://127.0.0.1:8000/create-job", 
-		{
-			method: "POST",
-			body: JSON.stringify(payload)
-		})
-		.then(function(res) {return res.json(); })
-		.then(this.processJob);
-	}
-
 	render () {
+		var processors = null;
+		if (this.state.request === "") {
+			processors = (<div></div>);
+		} else {
+			processors = (
+				<DocumentationProcessor
+					request={this.state.request} />
+			);
+		}
 		return (
 			<MuiThemeProvider>
 				<div>
@@ -42,8 +36,8 @@ class App extends React.Component {
 						title="Code Insights" />
 					<Request 
 						callback={this.createRequest}/>
-					<DocumentationProcessor 
-						request={this.state.request}/>
+					
+					{processors}
 				</div>
 			</MuiThemeProvider>
 		);

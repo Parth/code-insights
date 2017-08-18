@@ -1,23 +1,27 @@
 import React from 'react';
 
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-
-import LinearProgress from 'material-ui/LinearProgress';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class Request extends React.Component {
 
+	style = {
+		marginTop: '20px',
+	}
+
 	render() {
 		return (
-			<Card>
+			<Card
+				style={this.style}>
 				<CardHeader
-					title="Documentation Processor"
-					actAsExpander={true}
-					showExpandableButton={true} />
+					title="Create a new Request"/>
+				
+				<TextField/>
 
 				<CardActions>
-					<LinearProgress mode="indeterminate" />
+					<FlatButton label="Submit"/>
 				</CardActions>
-
 			</Card>
 		);
 	}
