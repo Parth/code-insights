@@ -16,10 +16,12 @@ export default class Status extends React.Component {
 	}
 
 	componentDidMount() {
-		checkOnJob();
+		console.log("component mounted");
+		this.checkOnJob();
 	}
 
 	checkOnJob = () => {
+		console.log("checking on job");
 		fetch("http://127.0.0.1:8000/check-job", 
 		{
 			method: "POST",
@@ -34,6 +36,7 @@ export default class Status extends React.Component {
 	}
 
 	processStatus = (data) => {
+		console.log(data);
 		if (data.error !== undefined) {
 			this.setState({
 				error: data
@@ -75,15 +78,8 @@ export default class Status extends React.Component {
 					title="Job Status Log"/>
 				
 				<CardText>
-					{this.state.jobStatus}
+					{this.state.jobStatus.statusLog}
 				</CardText>
-
-				<CardActions>
-					<RaisedButton 
-						primary={true} 
-						label="Submit"
-						onTouchTap={this.finalizeRequest}/>
-				</CardActions>
 			</Card>
 		);
 	}
