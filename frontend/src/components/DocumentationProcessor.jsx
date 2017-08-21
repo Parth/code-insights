@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import {Table,	TableBody, TableHeader, TableHeaderColumn, TableRowColumn, TableRow} from 'material-ui/Table';
 
 import LinearProgress from 'material-ui/LinearProgress';
 
@@ -48,7 +49,9 @@ export default class DocumentationProcessor extends React.Component {
 	}
 
 	onComplete = (result) => {
+		console.log("RESULT:");
 		this.setState({result: result});
+		console.log(this.state);
 	}
 
 	style = {
@@ -58,6 +61,7 @@ export default class DocumentationProcessor extends React.Component {
 	render() {
 		console.log("DP render event");
 		let table = null;
+		//TODO key prop
 		if (this.state.result !== "") {
 			table = (
 				<Table>

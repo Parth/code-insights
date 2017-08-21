@@ -52,6 +52,10 @@ export default class Status extends React.Component {
 		}
 	}
 
+	onFinish = (data) => { 
+		this.props.onComplete(data);
+	}
+
 	getResult = () => {
 		fetch("http://127.0.0.1:8000/job-result", 
 		{
@@ -59,7 +63,7 @@ export default class Status extends React.Component {
 			body: JSON.stringify(this.state.job)
 		})
 		.then(function(res) {return res.json(); })
-		.then(this.props.onFinish);
+		.then(this.onFinish);
 	}
 
 	style = {
