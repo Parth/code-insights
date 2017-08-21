@@ -60,7 +60,6 @@ public class ProcessorService {
 				jobs.get(newJob).pushUpdate(update);
 			}, (result) -> {
 				results.put(newJob, (List<Coder>) result);
-				System.out.println("1234: " + results);
 			});
 		};
 
