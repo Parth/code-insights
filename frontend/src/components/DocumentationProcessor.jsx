@@ -25,8 +25,6 @@ export default class DocumentationProcessor extends React.Component {
 			processorType: "Documentation"
 		};
 		
-		console.log("DocumentationProcessor mounted");
-		console.log(payload);
 		fetch("http://127.0.0.1:8000/create-job", 
 		{
 			method: "POST",
@@ -37,21 +35,15 @@ export default class DocumentationProcessor extends React.Component {
 	}
 
 	handleNewJob = (data) => {
-		console.log("new job created:");
-		console.log(data);
 		if (data.error !== undefined) {
-			console.log(data);
 			this.setState({error: data});
 		} else {
 			this.setState({job : data});
 		}
-		console.log(this.state);
 	}
 
 	onComplete = (result) => {
-		console.log("RESULT:");
 		this.setState({result: result});
-		console.log(this.state);
 	}
 
 	style = {
@@ -59,7 +51,6 @@ export default class DocumentationProcessor extends React.Component {
 	}
 
 	render() {
-		console.log("DP render event");
 		let table = null;
 		//TODO key prop
 		if (this.state.result !== "") {
@@ -101,7 +92,6 @@ export default class DocumentationProcessor extends React.Component {
 
 		let jobStatus = null; 
 		if (this.state.job !== "") {
-			console.log("drawing status");
 			jobStatus = (
 				<Status 
 					job={this.state.job}

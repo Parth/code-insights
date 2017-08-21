@@ -16,12 +16,10 @@ export default class Status extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log("component mounted");
 		this.checkOnJob();
 	}
 
 	checkOnJob = () => {
-		console.log("checking on job");
 		fetch("http://127.0.0.1:8000/check-job", 
 		{
 			method: "POST",
@@ -36,7 +34,6 @@ export default class Status extends React.Component {
 	}
 
 	processStatus = (data) => {
-		console.log(data);
 		if (data.error !== undefined) {
 			this.setState({
 				error: data
