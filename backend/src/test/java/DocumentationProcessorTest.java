@@ -22,15 +22,15 @@ public class DocumentationProcessorTest {
 	@Test
 	public void testFileWithNoComments() throws Exception {
 		Git testRepo = RepositoryProcessor.cloneRepo(REPO_DEST);
-		List<Coder> coders = RepositoryProcessor.getCoders(testRepo);
+		List<DocumentationCoder> documentationCoders = RepositoryProcessor.getCoders(testRepo);
 
 		File repoDir = testRepo.getRepository().getDirectory().getParentFile();
 		File testFile = new File(repoDir.getPath() + "/DocumentationProcessorTests/Test1.java");
 
-		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, coders);
-		assertNotNull(coders);
+		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, documentationCoders);
+		assertNotNull(documentationCoders);
 
-		for (Coder c : coders) {
+		for (DocumentationCoder c : documentationCoders) {
 			if (c.methodsContributed != 0) {
 				assertEquals(c.methodsContributed, 1);
 				assertEquals(c.documentedMethods, 0);
@@ -42,15 +42,15 @@ public class DocumentationProcessorTest {
 	@Test
 	public void testFileWithComments() throws Exception {
 		Git testRepo = RepositoryProcessor.cloneRepo(REPO_DEST);
-		List<Coder> coders = RepositoryProcessor.getCoders(testRepo);
+		List<DocumentationCoder> documentationCoders = RepositoryProcessor.getCoders(testRepo);
 
 		File repoDir = testRepo.getRepository().getDirectory().getParentFile();
 		File testFile = new File(repoDir.getPath() + "/DocumentationProcessorTests/Test2.java");
 
-		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, coders);
-		assertNotNull(coders);
+		DocumentationProcessor noComments = new DocumentationProcessor(testFile, testRepo, documentationCoders);
+		assertNotNull(documentationCoders);
 
-		for (Coder c : coders) {
+		for (DocumentationCoder c : documentationCoders) {
 			if (c.methodsContributed != 0) {
 				assertEquals(c.methodsContributed, 1);
 				assertEquals(c.documentedMethods, 1);

@@ -56,10 +56,10 @@ public class ProcessorServiceTest {
 		assertTrue(s.getStatusLog().contains("Test1.java"));
 		assertTrue(s.getStatusLog().contains("Test2.java"));
 		assertTrue(s.getCurrentStatus().equals("Done."));
-		List<Coder> coders = ProcessorService.getResult(j);
-		System.out.println(coders);
-		assertNotNull(coders);
-		assertTrue(coders.size() > 2);
+		List<DocumentationCoder> documentationCoders = ProcessorService.getResult(j);
+		System.out.println(documentationCoders);
+		assertNotNull(documentationCoders);
+		assertTrue(documentationCoders.size() > 2);
 	}
 
 }

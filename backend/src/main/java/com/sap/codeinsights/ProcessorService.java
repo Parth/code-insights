@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProcessorService {
 	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
-	public static final Hashtable<Job, List<Coder>> results = new Hashtable<Job, List<Coder>>();
+	public static final Hashtable<Job, List<DocumentationCoder>> results = new Hashtable<Job, List<DocumentationCoder>>();
 
 	public static String allProcessors() {
 		// TODO should be creating a JSONArray or something similar
@@ -37,13 +37,13 @@ public class ProcessorService {
 		return jobs.get(job);
 	}
 
-	public static List<Coder> getResult(Job job) throws Error {
+	public static List<DocumentationCoder> getResult(Job job) throws Error {
 		if (!jobs.containsKey(job)) {
 			throw new Error("Job does not exist.", Error.JOB_NOT_FOUND);
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
-			List<Coder> ret = results.get(job);
+			List<DocumentationCoder> ret = results.get(job);
 			jobs.remove(job);
 			return ret;
 		} else {
@@ -59,7 +59,7 @@ public class ProcessorService {
 			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
 				jobs.get(newJob).pushUpdate(update);
 			}, (result) -> {
-				results.put(newJob, (List<Coder>) result);
+				results.put(newJob, (List<DocumentationCoder>) result);
 			});
 		};
 

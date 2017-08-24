@@ -83,18 +83,18 @@ public class RepositoryProcessor {
 	}
 
 	//returns anyone who ever committed anything to the repository
-	public synchronized static ArrayList<Coder> getCoders(Git repo) {
-		ArrayList<Coder> coders = new ArrayList<Coder>();
+	public synchronized static ArrayList<DocumentationCoder> getCoders(Git repo) {
+		ArrayList<DocumentationCoder> documentationCoders = new ArrayList<DocumentationCoder>();
 		try {
 
 			Iterable<RevCommit> commits = repo.log().all().call();
 			for (RevCommit rc : commits) {
-				Coder coder = new Coder(rc.getAuthorIdent());
-				if (!coders.contains(coder)) {
-					coders.add(coder);
+				DocumentationCoder documentationCoder = new DocumentationCoder(rc.getAuthorIdent());
+				if (!documentationCoders.contains(documentationCoder)) {
+					documentationCoders.add(documentationCoder);
 				}
 			}
-			return coders;
+			return documentationCoders;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -114,7 +114,7 @@ public class RepositoryProcessor {
 			updater.pushUpdate(new Update(0, "Cloning Repository"));
 			repo = cloneRepo(r.getURL());
 
-			ArrayList<Coder> coders = getCoders(repo);
+			ArrayList<DocumentationCoder> documentationCoders = getCoders(repo);
 
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 
@@ -124,12 +124,12 @@ public class RepositoryProcessor {
 			for (File file : files) {
 				updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
 				// TODO: This could be better, for sure, but how can we do it in a way that makes creating a processor as easy as possible?
-				DocumentationProcessor dp = new DocumentationProcessor(file, repo, coders);
+				DocumentationProcessor dp = new DocumentationProcessor(file, repo, documentationCoders);
 			}
 
 			updater.pushUpdate(new Update(0, "Forming result"));
-			result.setResult(coders);
-			response += coders.toString();
+			result.setResult(documentationCoders);
+			response += documentationCoders.toString();
 			updater.pushUpdate(new Update(1, "Done."));
 
 		} catch (Exception e) {

@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 public class CodeRequest {
 	private String url;
 	private String processorType;
-	private volatile transient List<Coder> result;
+	private volatile transient List<DocumentationCoder> result;
 
 	public CodeRequest(String url, String processorType) {
 		this.url = url;
@@ -39,11 +39,11 @@ public class CodeRequest {
         return parser.parse(this.toString()).getAsJsonObject();
     }
 
-	public synchronized void setResult(List<Coder> result) {
+	public synchronized void setResult(List<DocumentationCoder> result) {
 		this.result = result;
 	}
 
-	public synchronized List<Coder> getResult() {
+	public synchronized List<DocumentationCoder> getResult() {
 		return result;
 	}
 

@@ -1,6 +1,6 @@
 package com.sap.codeinsights;
 
-public class GitCoder extends Coder {
+public class GitCoder {
 	public int commitsContributed;
 	public int filesChanged; 
 	public int linesAdded; 
