@@ -51,6 +51,7 @@ public class CodeRequest {
 		if (o == null) return new Error("Null Code Request.", Error.NULL_ERROR);
 
 		//TODO this is a bit unclear, make it more clear;
+		// TODO check for domains that are more than 3 characters like .corp
 		String url = o.getURL();
 		String processorType = o.getProcessorType();
 
