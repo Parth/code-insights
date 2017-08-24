@@ -8,14 +8,6 @@ import org.eclipse.jgit.lib.PersonIdent;
 
 public class Coder extends PersonIdent{
 
-	//TODO Containerize this
-	public int methodsContributed;
-
-	//TODO do we use this?
-	public int documentationContributed;
-	public int documentedMethods;
-	public int undocumentedMethods;
-
 	public Coder(PersonIdent i) {
 		super(i);
 	}
