@@ -9,6 +9,7 @@ import org.eclipse.jgit.lib.PersonIdent;
 public class GitCoder extends PersonIdent {
 	public int commitsContributed;
 	public int filesChanged; 
+	public int uniqueFilesChanged;
 	public int linesAdded; 
 	public int linesDeleted;
 
