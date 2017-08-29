@@ -9,8 +9,11 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class Server {
+
+	public static final String WORKING_DIR = System.getProperty("user.home") + "/code-insights-working-directory";
+
 	public static boolean setupServer(){ 
-		File file = new File(System.getProperty("user.home") + "/code-insights-working-directory");
+		File file = new File(Server.WORKING_DIR);
 		try {
 			if (!file.exists()) {
 				Files.createDirectory(file.toPath());

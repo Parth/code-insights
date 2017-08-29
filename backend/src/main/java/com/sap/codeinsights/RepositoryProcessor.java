@@ -22,7 +22,7 @@ import java.util.List;
 public class RepositoryProcessor {
 	public synchronized static Git cloneRepo(String url) {
 		try {
-			File file = new File(System.getProperty("user.home") + "/code-insights/" + Math.abs((long) url.hashCode()));
+			File file = new File(Server.WORKING_DIR + Math.abs((long) url.hashCode()));
 
 			if (file.exists()) {
 				Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)

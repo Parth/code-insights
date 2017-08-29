@@ -60,7 +60,7 @@ public class CodeRequest {
 		UrlValidator urlValidator = new UrlValidator();
 		if (!urlValidator.isValid(url)) return new Error("Invalid URL", Error.INVALID_URL);
 
-		if (!processorType.equalsIgnoreCase("documentation")) return new Error("Invalid Processor Type", Error.INVALID_PROCESSOR);
+		if (!processorType.equalsIgnoreCase("documentation") && !processorType.equalsIgnoreCase("blameprocessor")) return new Error("Invalid Processor Type", Error.INVALID_PROCESSOR);
 
 		return null;
 	}
