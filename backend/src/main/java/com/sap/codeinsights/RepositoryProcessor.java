@@ -69,7 +69,7 @@ public class RepositoryProcessor {
 					})
 					.call();
 			} else {
-				result = Git.cloneRepository()
+				result = Git.cloneRepository(j
 					.setURI(url)
 					.setDirectory(file)
 					.call();

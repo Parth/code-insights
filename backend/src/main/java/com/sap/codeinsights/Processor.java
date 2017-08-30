@@ -1,7 +1,9 @@
 package com.sap.codeinsights;
 
-import java.util.List;
+public class Processor {
+	
+	public Processor(Git repo, List<GitCoder> coders) {
+	}
 
-public interface Processor {
-	public String getType();
+	public 
 }
