@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProcessorService {
 	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
-	public static final Hashtable<Job, List<DocumentationCoder>> results = new Hashtable<Job, List<DocumentationCoder>>();
+	public static final Hashtable<Job, Object> results = new Hashtable<Job, List<DocumentationCoder>>();
 
 	public static String allProcessors() {
 		// TODO should be creating a JSONArray or something similar
@@ -56,16 +56,35 @@ public class ProcessorService {
 		s.setStatusCode(0);
 		jobs.put(newJob, s);
 		Runnable task = () -> {
-			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
-				jobs.get(newJob).pushUpdate(update);
-			}, (result) -> {
-				results.put(newJob, (List<DocumentationCoder>) result);
-			});
+			results.put(newJob, getResult(job));
 		};
 
 		Thread t = new Thread(task);
 		t.start();
 		return t.isAlive();
+	}
+
+	private static void getResult(Job job) {
+		Updateable simpleUpdate = (update) -> {
+			jobs.get(newJob).pushUpdate(update);
+		};
+
+		Resultable simpleResult = (result) -> {
+			results.put(job, result);
+		};
+
+		CodeRequest r = job.getCodeRequest();
+
+		switch(r.getProcessorType().toLowercase()) {
+			case DocumentationProcessor.getType().toLowercase(): 
+				return new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+
+			case BlameProcessor.getType().toLowercase():
+				return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+
+			default:
+				return null;
+		}
 	}
 
 	private static Job findJobByRequest(CodeRequest req) {

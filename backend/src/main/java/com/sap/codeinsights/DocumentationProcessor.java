@@ -16,16 +16,70 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.comments.Comment;
 
-public class DocumentationProcessor extends VoidVisitorAdapter implements Processor {
-	private File file;
-	private List<DocumentationCoder> documentationCoders;
-	private Git repo;
+public class DocumentationProcessor extends Processor {
 
-	public DocumentationProcessor(File file, Git repo, List<DocumentationCoder> documentationCoders) throws FileNotFoundException, ParseException, IOException {
-		super();
-		this.file = file;
-		this.repo = repo;
-		this.documentationCoders = documentationCoders;
+	private List<DocumentationCoders> coders;
+	private static final String[] FILE_FILTER = new String[]{"java"};
+
+	public DocumentationProcessor(CodeRequest request, Updateable updater) {
+		super(request, updater);
+	}
+
+	public List<DocumentationCoder> getCoders(Git repo) {
+		List<DocumentationCoder> documentationCoders = new ArrayList<DocumentationCoder>();
+		try {
+			Iterable<RevCommit> commits = repo.log().all().call();
+			for (RevCommit rc : commits) {
+				DocumentationCoder documentationCoder = new DocumentationCoder(rc.getAuthorIdent());
+				if (!documentationCoders.contains(documentationCoder)) {
+					documentationCoders.add(documentationCoder);
+				}
+			}
+			return documentationCoders;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private void processFile(File file) {
+		updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
+		new VoidVisitorAdapter <Object> () {
+			@Override
+			public void visit(MethodDeclaration n, Object args) {
+				if (n.getComment().isPresent()) {
+					hasComments(n);
+				} else {
+					noComments(n);
+				}
+			}
+		}.visit(JavaParser.parse(file));
+	}
+
+	@Override
+	public void getResult(Resultable result) {
+		updater.pushUpdate(new Update(0, "Started Request");
+
+		try {
+			updater.pushUpdate(new Update(0, "Cloning Repository"));
+			this.repo = cloneRepo(request.getURL());
+			this.documentationCoders = getCoders(repo);
+
+			File repoDir = repo.getRepository().getDirectory().getParentFile();
+			List<File> files = (List<File>) FileUtils.listFiles(repoDir, FILE_FILTER, true);
+
+			for (File file : files) {
+				processFile(file);
+			}
+
+			updater.pushUpdate(new Update(0, "Forming result"));
+			result.setResult(documentationCoders);
+			updater.pushUpdate(new Update(1, "Done."));
+
+		} catch (Exception e) {
+			// TODO handle on your own.
+			e.printStackTrace();
+		}
 
 		FileInputStream inputStream = new FileInputStream(file);
 		this.visit(JavaParser.parse(inputStream), null);
@@ -101,17 +155,9 @@ public class DocumentationProcessor extends VoidVisitorAdapter implements Proces
 		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath()+"/", "");
 	}
 	
-	@Override
-	public void visit(MethodDeclaration n, Object args) {
-		if (n.getComment().isPresent()) {
-			hasComments(n);
-		} else {
-			noComments(n);
-		}
-	}
 
 	@Override
-	public String getType() {
+	public static String getType() {
 		return "DocumentationProcessor";
 	}
 
