@@ -76,11 +76,11 @@ public class ProcessorService {
 		CodeRequest r = job.getCodeRequest();
 
 		switch(r.getProcessorType().toLowercase()) {
-			case DocumentationProcessor.getType().toLowercase(): 
+			case Processor.getType().toLowercase():
 				return new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
 
-			case BlameProcessor.getType().toLowercase():
-				return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+			//case BlameProcessor.getType().toLowercase():
+			//	return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
 
 			default:
 				return null;

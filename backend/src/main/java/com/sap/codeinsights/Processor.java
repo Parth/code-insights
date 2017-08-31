@@ -1,21 +1,36 @@
 package com.sap.codeinsights;
 
-public class Processor {
-	
-	private Git repo;
-	private CodeRequest request;
-	private File file; 
+import com.jcraft.jsch.Session;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig;
+import org.eclipse.jgit.transport.SshSessionFactory;
+import org.eclipse.jgit.transport.SshTransport;
 
-	private Updatable updater; 
-	private CodeRequest request;
+import java.io.File;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 
-	public Processor(CodeRequest request, Updateable updater) {
+public abstract class Processor {
+
+	protected Git repo;
+	protected File file;
+
+	protected Updatable updater;
+	protected CodeRequest request;
+
+	public Processor(CodeRequest request, Updatable updater) {
 		this.request = request;
 		this.updater = updater;
 	}
 
+	public static abstract String getType();
+
 	public void cloneRepo() {
-		String url = r.getURL();
+		String url = request.getURL();
 		try {
 			this.file = new File(
 				Server.WORKING_DIR
@@ -47,7 +62,7 @@ public class Processor {
 					})
 					.call();
 			} else {
-				repo = Git.cloneRepository(j
+				repo = Git.cloneRepository()
 					.setURI(url)
 					.setDirectory(file)
 					.call();

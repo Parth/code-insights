@@ -7,21 +7,23 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ParseException;
 import com.github.javaparser.ast.comments.Comment;
+import org.eclipse.jgit.revwalk.RevCommit;
 
 public class DocumentationProcessor extends Processor {
 
-	private List<DocumentationCoders> coders;
+
+	private List<DocumentationCoder> documentationCoders;
 	private static final String[] FILE_FILTER = new String[]{"java"};
 
-	public DocumentationProcessor(CodeRequest request, Updateable updater) {
+	public DocumentationProcessor(CodeRequest request, Updatable updater) {
 		super(request, updater);
 	}
 
@@ -44,25 +46,29 @@ public class DocumentationProcessor extends Processor {
 
 	private void processFile(File file) {
 		updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
-		new VoidVisitorAdapter <Object> () {
-			@Override
-			public void visit(MethodDeclaration n, Object args) {
-				if (n.getComment().isPresent()) {
-					hasComments(n);
-				} else {
-					noComments(n);
-				}
-			}
-		}.visit(JavaParser.parse(file));
+		try {
+			new VoidVisitorAdapter<Object>() {
+                @Override
+                public void visit(MethodDeclaration n, Object args) {
+                    if (n.getComment().isPresent()) {
+                        hasComments(n);
+                    } else {
+                        noComments(n);
+                    }
+                }
+            }.visit(JavaParser.parse(file), null);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void getResult(Resultable result) {
-		updater.pushUpdate(new Update(0, "Started Request");
+		updater.pushUpdate(new Update(0, "Started Request"));
 
 		try {
 			updater.pushUpdate(new Update(0, "Cloning Repository"));
-			this.repo = cloneRepo(request.getURL());
+			super.cloneRepo();
 			this.documentationCoders = getCoders(repo);
 
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
@@ -81,9 +87,17 @@ public class DocumentationProcessor extends Processor {
 			e.printStackTrace();
 		}
 
-		FileInputStream inputStream = new FileInputStream(file);
-		this.visit(JavaParser.parse(inputStream), null);
-		inputStream.close();
+		FileInputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void hasComments(MethodDeclaration n) {
@@ -92,21 +106,21 @@ public class DocumentationProcessor extends Processor {
 		ArrayList<DocumentationCoder> programmers = new ArrayList<DocumentationCoder>();
 		ArrayList<DocumentationCoder> allContributors = new ArrayList<DocumentationCoder>();
 
-		try { 
+		try {
 			for (int i = comment.getBegin().get().line; i <= comment.getEnd().get().line; i++) {
-				DocumentationCoder commenter = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				DocumentationCoder commenter = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
 				if (!commenters.contains(commenter)) {
 					commenters.add(commenter);
 				}
 			}
 
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
 				if (!programmers.contains(programmer)) {
 					programmers.add(programmer);
 				}
 			}
-		} catch  (GitAPIException e) {
+		} catch (GitAPIException e) {
 			e.printStackTrace();
 		}
 
@@ -120,7 +134,7 @@ public class DocumentationProcessor extends Processor {
 		for (DocumentationCoder contributor : allContributors) {
 			documentationCoders.get(documentationCoders.indexOf(contributor)).methodsContributed++;
 		}
-		
+
 		for (DocumentationCoder commenter : commenters) {
 			documentationCoders.get(documentationCoders.indexOf(commenter)).documentationContributed++;
 		}
@@ -136,25 +150,25 @@ public class DocumentationProcessor extends Processor {
 
 		try {
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i-1));
+				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
 				if (!programmers.contains(programmer)) {
 					programmers.add(programmer);
 				}
 			}
-		} catch  (GitAPIException e) {
+		} catch (GitAPIException e) {
 			e.printStackTrace();
 		}
 
-		for (DocumentationCoder programmer: programmers) {
+		for (DocumentationCoder programmer : programmers) {
 			documentationCoders.get(documentationCoders.indexOf(programmer)).methodsContributed++;
 			documentationCoders.get(documentationCoders.indexOf(programmer)).undocumentedMethods++;
 		}
 	}
 
 	private String path() {
-		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath()+"/", "");
+		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
 	}
-	
+
 
 	@Override
 	public static String getType() {
