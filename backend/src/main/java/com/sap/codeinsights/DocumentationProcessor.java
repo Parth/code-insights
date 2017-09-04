@@ -23,6 +23,8 @@ public class DocumentationProcessor extends Processor {
 	private List<DocumentationCoder> documentationCoders;
 	private static final String[] FILE_FILTER = new String[]{"java"};
 
+	public static final String TYPE = "documentationprocessor";
+
 	public DocumentationProcessor(CodeRequest request, Updatable updater) {
 		super(request, updater);
 	}
@@ -169,15 +171,9 @@ public class DocumentationProcessor extends Processor {
 		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
 	}
 
-
-	@Override
-	public static String getType() {
-		return "DocumentationProcessor";
-	}
-
 	@Override
 	public String toString() {
-		return this.getType();
+		return TYPE;
 	}
 
 }

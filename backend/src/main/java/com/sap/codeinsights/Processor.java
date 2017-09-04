@@ -21,20 +21,20 @@ public abstract class Processor {
 
 	protected Updatable updater;
 	protected CodeRequest request;
+	
+	public static final String TYPE = "GeneralProcessor";
 
 	public Processor(CodeRequest request, Updatable updater) {
 		this.request = request;
 		this.updater = updater;
 	}
 
-	public static abstract String getType();
-
 	public void cloneRepo() {
 		String url = request.getURL();
 		try {
 			this.file = new File(
 				Server.WORKING_DIR
-				+ "/" + this.getType() +"/"
+				+ "/" + TYPE +"/"
 				+ Math.abs((long) url.hashCode()));
 
 			if (file.exists()) {
@@ -72,10 +72,6 @@ public abstract class Processor {
 			e.printStackTrace();
 			repo = null;
 		}
-	}
-
-	public static String getType() {
-		return "GeneralProcessor";
 	}
 
 	public abstract void getResult(Resultable result);

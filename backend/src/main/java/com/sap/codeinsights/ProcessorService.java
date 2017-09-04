@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ProcessorService {
 	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
-	public static final Hashtable<Job, Object> results = new Hashtable<Job, List<DocumentationCoder>>();
+	public static final Hashtable<Job, Object> results = new Hashtable<Job, Object>();
 
 	public static String allProcessors() {
 		// TODO should be creating a JSONArray or something similar
@@ -37,13 +37,13 @@ public class ProcessorService {
 		return jobs.get(job);
 	}
 
-	public static List<DocumentationCoder> getResult(Job job) throws Error {
+	public static Object getResult(Job job) throws Error {
 		if (!jobs.containsKey(job)) {
 			throw new Error("Job does not exist.", Error.JOB_NOT_FOUND);
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
-			List<DocumentationCoder> ret = results.get(job);
+			Object ret = results.get(job);
 			jobs.remove(job);
 			return ret;
 		} else {
@@ -56,7 +56,7 @@ public class ProcessorService {
 		s.setStatusCode(0);
 		jobs.put(newJob, s);
 		Runnable task = () -> {
-			results.put(newJob, getResult(job));
+			startJobForResult(newJob);
 		};
 
 		Thread t = new Thread(task);
@@ -64,9 +64,9 @@ public class ProcessorService {
 		return t.isAlive();
 	}
 
-	private static void getResult(Job job) {
-		Updateable simpleUpdate = (update) -> {
-			jobs.get(newJob).pushUpdate(update);
+	private static void startJobForResult(Job job) {
+		Updatable simpleUpdate = (update) -> {
+			jobs.get(job).pushUpdate(update);
 		};
 
 		Resultable simpleResult = (result) -> {
@@ -75,15 +75,12 @@ public class ProcessorService {
 
 		CodeRequest r = job.getCodeRequest();
 
-		switch(r.getProcessorType().toLowercase()) {
-			case Processor.getType().toLowercase():
-				return new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+		switch(r.getProcessorType().toLowerCase()) {
+			case DocumentationProcessor.TYPE:
+				new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
 
 			//case BlameProcessor.getType().toLowercase():
 			//	return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
-
-			default:
-				return null;
 		}
 	}
 
