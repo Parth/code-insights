@@ -22,8 +22,6 @@ public abstract class Processor {
 	protected Updatable updater;
 	protected CodeRequest request;
 	
-	public static final String TYPE = "GeneralProcessor";
-
 	public Processor(CodeRequest request, Updatable updater) {
 		this.request = request;
 		this.updater = updater;
@@ -34,7 +32,7 @@ public abstract class Processor {
 		try {
 			this.file = new File(
 				Server.WORKING_DIR
-				+ "/" + TYPE +"/"
+				+ "/" + getType() +"/"
 				+ Math.abs((long) url.hashCode()));
 
 			if (file.exists()) {
@@ -73,6 +71,8 @@ public abstract class Processor {
 			repo = null;
 		}
 	}
+
+	public abstract String getType();
 
 	public abstract void getResult(Resultable result);
 }

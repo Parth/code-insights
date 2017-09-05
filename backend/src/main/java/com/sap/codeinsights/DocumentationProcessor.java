@@ -19,11 +19,10 @@ import org.eclipse.jgit.revwalk.RevCommit;
 
 public class DocumentationProcessor extends Processor {
 
+	public static final String TYPE = "documentationprocessor";
 
 	private List<DocumentationCoder> documentationCoders;
 	private static final String[] FILE_FILTER = new String[]{"java"};
-
-	public static final String TYPE = "documentationprocessor";
 
 	public DocumentationProcessor(CodeRequest request, Updatable updater) {
 		super(request, updater);
@@ -152,7 +151,13 @@ public class DocumentationProcessor extends Processor {
 
 		try {
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
+				DocumentationCoder programmer = new DocumentationCoder(repo
+					.blame()
+					.setFilePath(path())
+					.call()
+					.getSourceAuthor(i - 1)
+				);
+
 				if (!programmers.contains(programmer)) {
 					programmers.add(programmer);
 				}
@@ -173,7 +178,11 @@ public class DocumentationProcessor extends Processor {
 
 	@Override
 	public String toString() {
-		return TYPE;
+		return getType();
 	}
 
+	@Override
+	public String getType() {
+		return TYPE;
+	}
 }
