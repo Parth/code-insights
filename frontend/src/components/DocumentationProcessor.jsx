@@ -22,7 +22,7 @@ export default class DocumentationProcessor extends React.Component {
 	componentDidMount() {
 		var payload = {
 			url: this.state.url,
-			processorType: "Documentation"
+			processorType: "documentationprocessor"
 		};
 		
 		fetch("http://127.0.0.1:8000/create-job", 

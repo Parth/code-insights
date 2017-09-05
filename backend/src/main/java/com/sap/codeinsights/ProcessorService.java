@@ -78,6 +78,7 @@ public class ProcessorService {
 		switch(r.getProcessorType().toLowerCase()) {
 			case DocumentationProcessor.TYPE:
 				new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+				break;
 
 			//case BlameProcessor.getType().toLowercase():
 			//	return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
