@@ -9,6 +9,7 @@ import AppBar from 'material-ui/AppBar';
 
 import Request from './components/Request';
 import DocumentationProcessor from './components/DocumentationProcessor';
+import AvailableProcessors from './components/AvailableProcessors';
 
 class App extends React.Component {
 	constructor(props) {
@@ -40,6 +41,7 @@ class App extends React.Component {
 				<div>
 					<AppBar
 						title="Code Insights" />
+					<AvailableProcessors/> 
 					<Request 
 						callback={this.createRequest}/>
 					

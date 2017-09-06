@@ -12,6 +12,7 @@ public class ProcessorService {
 	public static JsonArray allProcessors() {
 		JsonArray processors = new JsonArray();
 		processors.add(DocumentationProcessor.TYPE);
+		processors.add(DocumentationProcessor.TYPE);
 		return processors;
 	}
 
