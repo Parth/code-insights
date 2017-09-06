@@ -52,9 +52,9 @@ public class DocumentationProcessor extends Processor {
                 @Override
                 public void visit(MethodDeclaration n, Object args) {
                     if (n.getComment().isPresent()) {
-                        hasComments(n);
+                        hasComments(n, file);
                     } else {
-                        noComments(n);
+                        noComments(n, file);
                     }
                 }
             }.visit(JavaParser.parse(file), null);
@@ -87,21 +87,9 @@ public class DocumentationProcessor extends Processor {
 			// TODO handle on your own.
 			e.printStackTrace();
 		}
-
-		FileInputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		try {
-			inputStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
-	private void hasComments(MethodDeclaration n) {
+	private void hasComments(MethodDeclaration n, File file) {
 		Comment comment = n.getComment().get();
 		ArrayList<DocumentationCoder> commenters = new ArrayList<DocumentationCoder>();
 		ArrayList<DocumentationCoder> programmers = new ArrayList<DocumentationCoder>();
@@ -109,14 +97,14 @@ public class DocumentationProcessor extends Processor {
 
 		try {
 			for (int i = comment.getBegin().get().line; i <= comment.getEnd().get().line; i++) {
-				DocumentationCoder commenter = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
+				DocumentationCoder commenter = new DocumentationCoder(repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
 				if (!commenters.contains(commenter)) {
 					commenters.add(commenter);
 				}
 			}
 
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path()).call().getSourceAuthor(i - 1));
+				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
 				if (!programmers.contains(programmer)) {
 					programmers.add(programmer);
 				}
@@ -146,14 +134,14 @@ public class DocumentationProcessor extends Processor {
 	}
 
 	// TODO refactor to hashset of some sort
-	private void noComments(MethodDeclaration n) {
+	private void noComments(MethodDeclaration n, File file) {
 		ArrayList<DocumentationCoder> programmers = new ArrayList<DocumentationCoder>();
 
 		try {
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
 				DocumentationCoder programmer = new DocumentationCoder(repo
 					.blame()
-					.setFilePath(path())
+					.setFilePath(path(file))
 					.call()
 					.getSourceAuthor(i - 1)
 				);
@@ -172,7 +160,7 @@ public class DocumentationProcessor extends Processor {
 		}
 	}
 
-	private String path() {
+	private String path(File file) {
 		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
 	}
 

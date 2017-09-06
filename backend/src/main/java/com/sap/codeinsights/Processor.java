@@ -17,7 +17,7 @@ import java.util.Comparator;
 public abstract class Processor {
 
 	protected Git repo;
-	protected File file;
+	protected File workingDirectory;
 
 	protected Updatable updater;
 	protected CodeRequest request;
@@ -30,13 +30,13 @@ public abstract class Processor {
 	public void cloneRepo() {
 		String url = request.getURL();
 		try {
-			this.file = new File(
+			this.workingDirectory = new File(
 				Server.WORKING_DIR
 				+ "/" + getType() +"/"
 				+ Math.abs((long) url.hashCode()));
 
-			if (file.exists()) {
-				Files.walk(file.toPath(), FileVisitOption.FOLLOW_LINKS)
+			if (workingDirectory.exists()) {
+				Files.walk(workingDirectory.toPath(), FileVisitOption.FOLLOW_LINKS)
 						.sorted(Comparator.reverseOrder())
 						.map(Path::toFile)
 						.forEach(File::delete);
@@ -53,7 +53,7 @@ public abstract class Processor {
 			if (StringUtils.containsIgnoreCase("https", url)) {
 				repo = Git.cloneRepository()
 					.setURI(url)
-					.setDirectory(file)
+					.setDirectory(workingDirectory)
 					.setTransportConfigCallback(transport -> {
 						SshTransport sshTransport = (SshTransport) transport;
 						sshTransport.setSshSessionFactory(sshSessionFactory);
@@ -62,7 +62,7 @@ public abstract class Processor {
 			} else {
 				repo = Git.cloneRepository()
 					.setURI(url)
-					.setDirectory(file)
+					.setDirectory(workingDirectory)
 					.call();
 			}
 		} catch (Exception e) {
