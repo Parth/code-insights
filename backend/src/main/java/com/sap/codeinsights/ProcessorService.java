@@ -12,7 +12,7 @@ public class ProcessorService {
 	public static JsonArray allProcessors() {
 		JsonArray processors = new JsonArray();
 		processors.add(DocumentationProcessor.TYPE);
-		processors.add(DocumentationProcessor.TYPE);
+		processors.add(BlameProcessor.TYPE);
 		return processors;
 	}
 
@@ -84,8 +84,9 @@ public class ProcessorService {
 				new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
 				break;
 
-			//case BlameProcessor.getType().toLowercase():
-			//	return new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+			case BlameProcessor.TYPE:
+				new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+				break;
 		}
 	}
 

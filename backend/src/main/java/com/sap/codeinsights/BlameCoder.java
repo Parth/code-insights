@@ -6,14 +6,12 @@ import com.google.gson.JsonParser;
 
 import org.eclipse.jgit.lib.PersonIdent;
 
-public class GitCoder extends PersonIdent {
+public class BlameCoder extends PersonIdent {
 	public int commitsContributed;
-	public int filesChanged; 
-	public int uniqueFilesChanged;
-	public int linesAdded; 
-	public int linesDeleted;
+	public int linesContributed;
+	public float projectEquity;
 
-	public GitCoder(PersonIdent i) {
+	public BlameCoder(PersonIdent i) {
 		super(i);
 	}
 

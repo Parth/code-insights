@@ -9,6 +9,7 @@ import AppBar from 'material-ui/AppBar';
 
 import Request from './components/Request';
 import DocumentationProcessor from './components/DocumentationProcessor';
+import BlameProcessor from './components/BlameProcessor';
 import AvailableProcessors from './components/AvailableProcessors';
 
 class App extends React.Component {
@@ -32,8 +33,12 @@ class App extends React.Component {
 			processors = (<div></div>);
 		} else {
 			processors = (
-				<DocumentationProcessor
-					url={this.state.request} />
+				<div>
+					<DocumentationProcessor
+						url={this.state.request} />
+					<BlameProcessor
+						url={this.state.request} />
+				</div>
 			);
 		}
 		return (

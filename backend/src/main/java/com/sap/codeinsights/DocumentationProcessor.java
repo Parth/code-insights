@@ -28,10 +28,10 @@ public class DocumentationProcessor extends Processor {
 		super(request, updater);
 	}
 
-	public List<DocumentationCoder> getCoders(Git repo) {
+	public List<DocumentationCoder> getCoders() {
 		List<DocumentationCoder> documentationCoders = new ArrayList<DocumentationCoder>();
 		try {
-			Iterable<RevCommit> commits = repo.log().all().call();
+			Iterable<RevCommit> commits = super.repo.log().all().call();
 			for (RevCommit rc : commits) {
 				DocumentationCoder documentationCoder = new DocumentationCoder(rc.getAuthorIdent());
 				if (!documentationCoders.contains(documentationCoder)) {
@@ -70,7 +70,7 @@ public class DocumentationProcessor extends Processor {
 		try {
 			updater.pushUpdate(new Update(0, "Cloning Repository"));
 			super.cloneRepo();
-			this.documentationCoders = getCoders(repo);
+			this.documentationCoders = getCoders();
 
 			File repoDir = repo.getRepository().getDirectory().getParentFile();
 			List<File> files = (List<File>) FileUtils.listFiles(repoDir, FILE_FILTER, true);
@@ -97,14 +97,14 @@ public class DocumentationProcessor extends Processor {
 
 		try {
 			for (int i = comment.getBegin().get().line; i <= comment.getEnd().get().line; i++) {
-				DocumentationCoder commenter = new DocumentationCoder(repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
+				DocumentationCoder commenter = new DocumentationCoder(super.repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
 				if (!commenters.contains(commenter)) {
 					commenters.add(commenter);
 				}
 			}
 
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
+				DocumentationCoder programmer = new DocumentationCoder(super.repo.blame().setFilePath(path(file)).call().getSourceAuthor(i - 1));
 				if (!programmers.contains(programmer)) {
 					programmers.add(programmer);
 				}
@@ -139,7 +139,7 @@ public class DocumentationProcessor extends Processor {
 
 		try {
 			for (int i = n.getBegin().get().line; i <= n.getEnd().get().line; i++) {
-				DocumentationCoder programmer = new DocumentationCoder(repo
+				DocumentationCoder programmer = new DocumentationCoder(super.repo
 					.blame()
 					.setFilePath(path(file))
 					.call()
@@ -161,7 +161,7 @@ public class DocumentationProcessor extends Processor {
 	}
 
 	private String path(File file) {
-		return file.getAbsolutePath().replace(repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
+		return file.getAbsolutePath().replace(super.repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
 	}
 
 	@Override
