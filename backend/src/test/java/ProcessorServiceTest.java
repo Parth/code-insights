@@ -11,13 +11,13 @@ public class ProcessorServiceTest {
 
 	@Test(expected=Error.class)
 	public void testNoJobCheck() throws Exception {
-		Job j = new Job(System.currentTimeMillis(), new CodeRequest(REPO_DEST, "Documentation"));
+		Job j = new Job(System.currentTimeMillis(), new CodeRequest(REPO_DEST, "documentationprocessor"));
 		ProcessorService.getStatus(j);
 	}
 
 	@Test
 	public void createNewJob() throws InterruptedException, Error { 
-		CodeRequest cr = new CodeRequest(REPO_DEST, "Documentation");
+		CodeRequest cr = new CodeRequest(REPO_DEST, "documentationprocessor");
 
 		Job j = null;
 
@@ -56,7 +56,7 @@ public class ProcessorServiceTest {
 		assertTrue(s.getStatusLog().contains("Test1.java"));
 		assertTrue(s.getStatusLog().contains("Test2.java"));
 		assertTrue(s.getCurrentStatus().equals("Done."));
-		List<DocumentationCoder> documentationCoders = ProcessorService.getResult(j);
+		List<DocumentationCoder> documentationCoders = (List<DocumentationCoder>) ProcessorService.getResult(j);
 		System.out.println(documentationCoders);
 		assertNotNull(documentationCoders);
 		assertTrue(documentationCoders.size() > 2);
