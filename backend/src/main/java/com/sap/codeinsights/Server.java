@@ -47,5 +47,10 @@ public class Server {
 			res.header("Access-Control-Allow-Origin", "*");
 			return API.getJobResult(req.body());
 		});
+
+		get("/all-processors", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.processorsAvailable();
+		});
 	}
 }

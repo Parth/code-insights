@@ -3,13 +3,16 @@ package com.sap.codeinsights;
 import java.util.Hashtable;
 import java.util.List;
 
+import com.google.gson.JsonArray;
+
 public class ProcessorService {
 	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
 	public static final Hashtable<Job, Object> results = new Hashtable<Job, Object>();
 
-	public static String allProcessors() {
-		// TODO should be creating a JSONArray or something similar
-		return "[Documentation]";
+	public static JsonArray allProcessors() {
+		JsonArray processors = new JsonArray();
+		processors.add(DocumentationProcessor.TYPE);
+		return processors;
 	}
 
 	public synchronized static Job createJob(CodeRequest req) throws Error {
