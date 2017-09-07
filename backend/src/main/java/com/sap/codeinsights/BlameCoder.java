@@ -26,4 +26,10 @@ public class BlameCoder extends PersonIdent {
 		return 
 			super.getName().equalsIgnoreCase(c.getName());
 	}
+
+	@Override
+	public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 }

@@ -37,7 +37,7 @@ public class BlameProcessor extends Processor {
 				if (!blameCoders.contains(blameCoder)) {
 					blameCoders.add(blameCoder);
 				}
-				blameCoder.commitsContributed++;
+				blameCoders.get(blameCoders.indexOf(blameCoder)).commitsContributed++;
 			}
 			return blameCoders;
 		} catch (Exception e) {
