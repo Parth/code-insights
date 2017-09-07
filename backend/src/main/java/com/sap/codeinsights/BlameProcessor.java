@@ -1,9 +1,11 @@
+
 package com.sap.codeinsights;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.revwalk.RevCommit;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,10 +24,50 @@ public class BlameProcessor extends Processor {
 	}
 
 	private void processFile(File file) {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String line = null;  
+		int i = 0;
+		ArrayList<BlameCoder> stagingArea = new ArrayList<BlameCoder>();
+		try {
+			while ((line = br.readLine()) != null) {
+				try {
+					System.out.println("File: "+file+" line: " +i);
+					BlameCoder programmer = new BlameCoder(super.repo
+						.blame()
+						.setFilePath(path(file))
+						.call()
+						.getSourceAuthor(i)
+					);
+
+					stagingArea.add(programmer);
+				} catch (Exception e) {
+					//TODO update here
+					return;
+				}
+				i++;
+			}
+
+			for (BlameCoder c : stagingArea) {
+				int index = coders.indexOf(c);
+				if (index < 0) coders.add(c);
+
+				coders.get(coders.indexOf(c)).linesContributed++;
+			}
+		} catch (IOException e) {
+		}
 	}
 
 	private void calculateEquity() {
 
+	}
+
+	private String path(File file) {
+		return file.getAbsolutePath().replace(super.repo.getRepository().getDirectory().getParentFile().getAbsolutePath() + "/", "");
 	}
 
 	public List<BlameCoder> getCoders() {
