@@ -24,6 +24,13 @@ public class BlameProcessor extends Processor {
 	}
 
 	private void processFile(File file) {
+		//TODO this needs to be handled in the form of a stream's filter
+		if (file.getPath().contains(".git")) {
+			updater.pushUpdate(new Update(0, "Skipping file: " + file.getName()));
+			return;
+		}
+
+		updater.pushUpdate(new Update(0, "Processing file: " + file.getName()));
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(file));
@@ -36,7 +43,6 @@ public class BlameProcessor extends Processor {
 		try {
 			while ((line = br.readLine()) != null) {
 				try {
-					System.out.println("File: "+file+" line: " +i);
 					BlameCoder programmer = new BlameCoder(super.repo
 						.blame()
 						.setFilePath(path(file))
@@ -63,7 +69,15 @@ public class BlameProcessor extends Processor {
 	}
 
 	private void calculateEquity() {
+		updater.pushUpdate(new Update(0, "Calculating equity"));
+		int lines = 0;
+		for (BlameCoder c : coders) {
+			lines += c.linesContributed;
+		}
 
+		for (BlameCoder c : coders) {
+			c.projectEquity = ((float) c.linesContributed / lines);
+		}
 	}
 
 	private String path(File file) {
