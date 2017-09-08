@@ -9,8 +9,11 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class Server {
+
+	public static final String WORKING_DIR = System.getProperty("user.home") + "/code-insights-working-directory";
+
 	public static boolean setupServer(){ 
-		File file = new File(System.getProperty("user.home") + "/code-insights-working-directory");
+		File file = new File(Server.WORKING_DIR);
 		try {
 			if (!file.exists()) {
 				Files.createDirectory(file.toPath());
@@ -43,6 +46,11 @@ public class Server {
 		post("/job-result", (req, res) -> {
 			res.header("Access-Control-Allow-Origin", "*");
 			return API.getJobResult(req.body());
+		});
+
+		get("/all-processors", (req, res) -> {
+			res.header("Access-Control-Allow-Origin", "*");
+			return API.processorsAvailable();
 		});
 	}
 }

@@ -7,7 +7,7 @@ import LinearProgress from 'material-ui/LinearProgress';
 
 import Status from './Status';
 
-export default class DocumentationProcessor extends React.Component {
+export default class BlameProcessor extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -22,7 +22,7 @@ export default class DocumentationProcessor extends React.Component {
 	componentDidMount() {
 		var payload = {
 			url: this.state.url,
-			processorType: "documentationprocessor"
+			processorType: "blameprocessor"
 		};
 		
 		fetch("http://127.0.0.1:8000/create-job", 
@@ -59,18 +59,18 @@ export default class DocumentationProcessor extends React.Component {
 					<TableHeader>
 						<TableRow>
 							<TableHeaderColumn>Name</TableHeaderColumn>
-							<TableHeaderColumn>Methods Contributed</TableHeaderColumn>
-							<TableHeaderColumn>Methods Documented</TableHeaderColumn>
-							<TableHeaderColumn>Methods Not Documented</TableHeaderColumn>
+							<TableHeaderColumn>Commits Contributed</TableHeaderColumn>
+							<TableHeaderColumn>Lines Contributed</TableHeaderColumn>
+							<TableHeaderColumn>Project Equity</TableHeaderColumn>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{this.state.result.map((datum) => (
 							<TableRow>
 								<TableRowColumn>{datum.name}</TableRowColumn>
-								<TableRowColumn>{datum.methodsContributed}</TableRowColumn>
-								<TableRowColumn>{datum.documentedMethods}</TableRowColumn>
-								<TableRowColumn>{datum.undocumentedMethods}</TableRowColumn>
+								<TableRowColumn>{datum.commitsContributed}</TableRowColumn>
+								<TableRowColumn>{datum.linesContributed}</TableRowColumn>
+								<TableRowColumn>{datum.projectEquity}</TableRowColumn>
 							</TableRow>
 						))}
 					</TableBody>
@@ -108,7 +108,7 @@ export default class DocumentationProcessor extends React.Component {
 				style={this.style} >
 
 				<CardHeader
-					title="Documentation Processor"
+					title="Blame Processor"
 					subtitle="Show details"
 					actAsExpander={true}
 					showExpandableButton={true} />

@@ -31,7 +31,7 @@ public class ApiTest {
 	public void successfulCreation() throws InterruptedException {
 		JsonObject json = new JsonObject();
 		json.addProperty("url", REPO_DEST);
-		json.addProperty("processorType", "Documentation");
+		json.addProperty("processorType", "documentationprocessor");
 
 		String response = API.createJob(json.toString());
 		for (int i = 0; i < 5 && response.contains("error"); i++) {
@@ -69,7 +69,7 @@ public class ApiTest {
 	public void badURLTest() {
 		JsonObject json = new JsonObject();
 		json.addProperty("url", "this is a bad url");
-		json.addProperty("processorType", "Documentation");
+		json.addProperty("processorType", "documentationprocessor");
 
 		String response = API.createJob(json.toString());
 		assertTrue(response.contains("Invalid URL"));

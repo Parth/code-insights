@@ -1,5 +1,5 @@
 package com.sap.codeinsights;
 
 public interface Updatable {
-	public void pushUpdate(Update update);
+	void pushUpdate(Update update);
 }

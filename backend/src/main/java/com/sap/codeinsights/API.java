@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 
 public class API {
 	public static String createJob(String json) {
-		System.out.println(json);
 		Gson gson = new Gson(); 
 		CodeRequest request = gson.fromJson(json, CodeRequest.class);
 
@@ -22,7 +21,6 @@ public class API {
 	}
 
 	public static String checkJobStatus(String json) {
-		System.out.println(json);
 		Gson gson = new Gson(); 
 		Job job = gson.fromJson(json, Job.class);
 		if (Job.getValidity(job) != null) {

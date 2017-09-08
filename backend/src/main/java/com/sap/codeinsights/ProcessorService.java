@@ -3,13 +3,17 @@ package com.sap.codeinsights;
 import java.util.Hashtable;
 import java.util.List;
 
+import com.google.gson.JsonArray;
+
 public class ProcessorService {
 	public static final Hashtable<Job, Status> jobs = new Hashtable<Job, Status>();
-	public static final Hashtable<Job, List<Coder>> results = new Hashtable<Job, List<Coder>>();
+	public static final Hashtable<Job, Object> results = new Hashtable<Job, Object>();
 
-	public static String allProcessors() {
-		// TODO should be creating a JSONArray or something similar
-		return "[Documentation]";
+	public static JsonArray allProcessors() {
+		JsonArray processors = new JsonArray();
+		processors.add(DocumentationProcessor.TYPE);
+		processors.add(BlameProcessor.TYPE);
+		return processors;
 	}
 
 	public synchronized static Job createJob(CodeRequest req) throws Error {
@@ -37,13 +41,13 @@ public class ProcessorService {
 		return jobs.get(job);
 	}
 
-	public static List<Coder> getResult(Job job) throws Error {
+	public static Object getResult(Job job) throws Error {
 		if (!jobs.containsKey(job)) {
 			throw new Error("Job does not exist.", Error.JOB_NOT_FOUND);
 		}
 
 		if (jobs.get(job).getStatusCode() == 1) {
-			List<Coder> ret = results.get(job);
+			Object ret = results.get(job);
 			jobs.remove(job);
 			return ret;
 		} else {
@@ -56,16 +60,34 @@ public class ProcessorService {
 		s.setStatusCode(0);
 		jobs.put(newJob, s);
 		Runnable task = () -> {
-			RepositoryProcessor.process(newJob.getCodeRequest(), (update) -> {
-				jobs.get(newJob).pushUpdate(update);
-			}, (result) -> {
-				results.put(newJob, (List<Coder>) result);
-			});
+			startJobForResult(newJob);
 		};
 
 		Thread t = new Thread(task);
 		t.start();
 		return t.isAlive();
+	}
+
+	private static void startJobForResult(Job job) {
+		Updatable simpleUpdate = (update) -> {
+			jobs.get(job).pushUpdate(update);
+		};
+
+		Resultable simpleResult = (result) -> {
+			results.put(job, result);
+		};
+
+		CodeRequest r = job.getCodeRequest();
+
+		switch(r.getProcessorType().toLowerCase()) {
+			case DocumentationProcessor.TYPE:
+				new DocumentationProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+				break;
+
+			case BlameProcessor.TYPE:
+				new BlameProcessor(job.getCodeRequest(), simpleUpdate).getResult(simpleResult);
+				break;
+		}
 	}
 
 	private static Job findJobByRequest(CodeRequest req) {

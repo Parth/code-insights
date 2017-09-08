@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 
 import org.eclipse.jgit.lib.PersonIdent;
 
-public class Coder extends PersonIdent{
+public class DocumentationCoder extends PersonIdent {
 
 	//TODO Containerize this
 	public int methodsContributed;
@@ -16,7 +16,7 @@ public class Coder extends PersonIdent{
 	public int documentedMethods;
 	public int undocumentedMethods;
 
-	public Coder(PersonIdent i) {
+	public DocumentationCoder(PersonIdent i) {
 		super(i);
 	}
 
@@ -27,7 +27,7 @@ public class Coder extends PersonIdent{
 
 	@Override
 	public boolean equals(final Object o) {
-		final Coder c = (Coder) o;
+		final PersonIdent c = (PersonIdent) o;
 		return 
 			super.getName().equalsIgnoreCase(c.getName());
 	}

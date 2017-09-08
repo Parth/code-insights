@@ -11,7 +11,6 @@ import com.google.gson.JsonParser;
 public class CodeRequest {
 	private String url;
 	private String processorType;
-	private volatile transient List<Coder> result;
 
 	public CodeRequest(String url, String processorType) {
 		this.url = url;
@@ -39,14 +38,6 @@ public class CodeRequest {
         return parser.parse(this.toString()).getAsJsonObject();
     }
 
-	public synchronized void setResult(List<Coder> result) {
-		this.result = result;
-	}
-
-	public synchronized List<Coder> getResult() {
-		return result;
-	}
-
 	public static Error getValidity(CodeRequest o) {
 		if (o == null) return new Error("Null Code Request.", Error.NULL_ERROR);
 
@@ -60,7 +51,7 @@ public class CodeRequest {
 		UrlValidator urlValidator = new UrlValidator();
 		if (!urlValidator.isValid(url)) return new Error("Invalid URL", Error.INVALID_URL);
 
-		if (!processorType.equalsIgnoreCase("documentation")) return new Error("Invalid Processor Type", Error.INVALID_PROCESSOR);
+		if (!processorType.equalsIgnoreCase("documentationprocessor") && !processorType.equalsIgnoreCase("blameprocessor")) return new Error("Invalid Processor Type", Error.INVALID_PROCESSOR);
 
 		return null;
 	}
